@@ -5,7 +5,7 @@ from langchain.docstore.document import Document
 
 VECTOR_STORE_PATH = "faiss_index"
 
-def load_or_create_vector_store(chunks, model_name="qwen2.5-coder:3b"):
+def load_or_create_vector_store(chunks, model_name="mxbai-embed-large:335m"):
     """
     Loads an existing FAISS store or creates one from provided chunks.
     Accepts List[Document] and stores them using Ollama embeddings.

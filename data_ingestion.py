@@ -18,7 +18,7 @@ def load_pdf(filepath: str) -> str:
 
 
 
-pdf_path = "C:/Users/chris/Desktop/machine_learning.pdf"
+pdf_path = "C:/Users/chris/Desktop/AI_research/machine_learning.pdf"
 text = load_pdf(pdf_path)
 chunks = chunk_pdf_text(text, chunk_size=300, chunk_overlap=30)
 
@@ -26,4 +26,4 @@ chunks = chunk_pdf_text(text, chunk_size=300, chunk_overlap=30)
 for i, chunk in enumerate(chunks[:5]):
     print(f"\n--- Chunk {i+1} ---\n{chunk.page_content[:300]}")
 
-#load_or_create_vector_store(chunks)
+load_or_create_vector_store(chunks)
