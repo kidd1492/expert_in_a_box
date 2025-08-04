@@ -1,5 +1,8 @@
 venv
 /faiss_index
 __pycache__
-/scr
 syllabus.txt
+test.py
+.env
+scr/faiss_index
+scr/logs
