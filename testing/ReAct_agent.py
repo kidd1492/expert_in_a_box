@@ -7,6 +7,8 @@ from langgraph.graph.message import add_messages
 from langgraph.graph import StateGraph, END
 from langgraph.prebuilt import ToolNode
 import os, requests, json
+from langchain_ollama import ChatOllama, OllamaEmbeddings
+from langchain_community.vectorstores import FAISS
 
 
 load_dotenv()
@@ -15,6 +17,29 @@ ZIP_CODE = "45140"  # You can override this as needed
 
 class AgentState(TypedDict):
     messages: Annotated[Sequence[BaseMessage], add_messages]
+
+
+# ========== FAISS Vector Store Setup ==========
+def load_vector_store(index_path="faiss_index", embedding_model_name="mxbai-embed-large:335m"):
+    embeddings = OllamaEmbeddings(model=embedding_model_name)
+    vector_store = FAISS.load_local(index_path, embeddings, allow_dangerous_deserialization=True)
+    print("✅ FAISS store loaded successfully!")
+    return vector_store
+
+VECTOR_STORE_PATH = "faiss_index"
+EMBED_MODEL = "mxbai-embed-large:335m"
+vectorstore = load_vector_store(index_path=VECTOR_STORE_PATH, embedding_model_name=EMBED_MODEL)
+retriever = vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": 3})
+
+@tool
+def retriever_tool(query: str) -> str:
+    """Tool that queries FAISS-indexed documents."""
+    docs = retriever.invoke(query)
+    if not docs:
+        return "I found no relevant information."
+
+    return "\n\n".join([f"Document {i+1}:\n{doc.page_content}" for i, doc in enumerate(docs)])
+
 
 
 @tool
@@ -34,7 +59,7 @@ def get_weather(zip_code=ZIP_CODE, units="imperial") -> dict:
         raise Exception(f"Failed to fetch weather: {response.status_code}")
     return response.json()
 
-tools = [add, get_weather]
+tools = [add, get_weather, retriever_tool]
 
 model = ChatOllama(model='llama3.2:3b').bind_tools(tools)
 
@@ -83,5 +108,17 @@ def print_stream(stream):
                 print(last)
 
 
-inputs = {"messages": [HumanMessage(content="what is the weather like today? what would be something good to do outside today?")]}
-print_stream(app.stream(inputs, stream_mode="values"))
+
+# ========== Run Agent Loop ==========
+def running_agent():
+    print("💡 RAG Agent Ready")
+    while True:
+        user_input = input("\n📥 Question: ")
+        if user_input.lower() in ["exit", "quit"]:
+            break
+        inputs = {"messages": [HumanMessage(content=user_input)]}
+        print_stream(app.stream(inputs, stream_mode="values"))
+
+
+
+running_agent()

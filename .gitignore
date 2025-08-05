@@ -7,3 +7,6 @@ test.py
 scr/faiss_index
 scr/logs
 agents/out
+testing/faiss_index
+testing/logs
+
