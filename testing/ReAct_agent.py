@@ -9,6 +9,7 @@ from langgraph.prebuilt import ToolNode
 import os, requests, json
 from langchain_ollama import ChatOllama, OllamaEmbeddings
 from langchain_community.vectorstores import FAISS
+from data_ingestion import load_pdf
 
 
 load_dotenv()
@@ -43,9 +44,10 @@ def retriever_tool(query: str) -> str:
 
 
 @tool
-def add(a: int, b: int):
-    """This is a function to add two numbers together"""
-    return a + b
+def add_pdf(filepath):
+    """This is a function for adding data ingestion for rag system"""
+    load_pdf(filepath)
+    return "loaded pdf"
 
 
 #Get real-time weather from OpenWeather API
@@ -59,7 +61,7 @@ def get_weather(zip_code=ZIP_CODE, units="imperial") -> dict:
         raise Exception(f"Failed to fetch weather: {response.status_code}")
     return response.json()
 
-tools = [add, get_weather, retriever_tool]
+tools = [load_pdf, get_weather, retriever_tool]
 
 model = ChatOllama(model='llama3.2:3b').bind_tools(tools)
 
