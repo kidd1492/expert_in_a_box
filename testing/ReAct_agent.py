@@ -27,14 +27,15 @@ def load_vector_store(index_path="faiss_index", embedding_model_name="mxbai-embe
     print("✅ FAISS store loaded successfully!")
     return vector_store
 
-VECTOR_STORE_PATH = "faiss_index"
-EMBED_MODEL = "mxbai-embed-large:335m"
-vectorstore = load_vector_store(index_path=VECTOR_STORE_PATH, embedding_model_name=EMBED_MODEL)
-retriever = vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": 3})
+
 
 @tool
 def retriever_tool(query: str) -> str:
     """Tool that queries FAISS-indexed documents."""
+    VECTOR_STORE_PATH = "faiss_index"
+    EMBED_MODEL = "mxbai-embed-large:335m"
+    vectorstore = load_vector_store(index_path=VECTOR_STORE_PATH, embedding_model_name=EMBED_MODEL)
+    retriever = vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": 3})
     docs = retriever.invoke(query)
     if not docs:
         return "I found no relevant information."
@@ -61,9 +62,9 @@ def get_weather(zip_code=ZIP_CODE, units="imperial") -> dict:
         raise Exception(f"Failed to fetch weather: {response.status_code}")
     return response.json()
 
-tools = [load_pdf, get_weather, retriever_tool]
+tools = [add_pdf, get_weather, retriever_tool]
 
-model = ChatOllama(model='qwen3:1.7b').bind_tools(tools)
+model = ChatOllama(model='personal:3b').bind_tools(tools)
 
 
 def model_call(state: AgentState) -> AgentState:
