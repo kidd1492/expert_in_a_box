@@ -4,11 +4,11 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 import re
 import os
 
-def chunk_pdf_text(
+def chunk_text(
     text: str,
     source_name: str = "unknown_source",
-    chunk_size: int = 300,
-    chunk_overlap: int = 30
+    chunk_size: int = 500,
+    chunk_overlap: int = 100
 ) -> List[Document]:
     """Chunk PDF text and tag each with metadata like topic and section."""
     if not text or not isinstance(text, str):

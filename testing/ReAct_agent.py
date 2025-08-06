@@ -9,12 +9,12 @@ from langgraph.prebuilt import ToolNode
 import os, requests, json
 from langchain_ollama import ChatOllama, OllamaEmbeddings
 from langchain_community.vectorstores import FAISS
-from data_ingestion import load_pdf
+from data_ingestion import read_document
+import wikipedia as wk
 
 
 load_dotenv()
-WEATHER_API_KEY = os.getenv("WEATHER_API_KEY")
-ZIP_CODE = "45140"  # You can override this as needed
+
 
 class AgentState(TypedDict):
     messages: Annotated[Sequence[BaseMessage], add_messages]
@@ -27,6 +27,22 @@ def load_vector_store(index_path="faiss_index", embedding_model_name="mxbai-embe
     print("✅ FAISS store loaded successfully!")
     return vector_store
 
+
+
+@tool
+def wiki_search(term):
+    """This function will gather research information from wikipedia and append it it wikiSearch.txt"""
+    try:
+        page = wk.page(term)
+        response = page.content
+        with open('wikiSearch.txt', 'a', encoding='UTF-8') as file:
+            file.write(response)
+    except wk.exceptions.DisambiguationError:
+        response = f"Multiple options found for '{term}'. Please specify."
+    except wk.exceptions.PageError:
+        response = f"No Wikipedia page found for '{term}'"
+
+    return "response saved to wikiSearch.txt"
 
 
 @tool
@@ -45,24 +61,14 @@ def retriever_tool(query: str) -> str:
 
 
 @tool
-def add_pdf(filepath):
-    """This is a function for adding data ingestion for rag system"""
-    load_pdf(filepath)
-    return "loaded pdf"
+def add_file(filepath):
+    """This is a function to load a PDF or txt file into the FAISS vectorstore rag system"""
+    read_document(filepath)
+    return "loaded file into store"
 
 
-#Get real-time weather from OpenWeather API
-@tool
-def get_weather(zip_code=ZIP_CODE, units="imperial") -> dict:
-    '''A funtion to fetch weather data from API'''
-    response = requests.get(
-        f"https://api.openweathermap.org/data/2.5/weather?zip={zip_code}&appid={WEATHER_API_KEY}&units={units}"
-    )
-    if response.status_code != 200:
-        raise Exception(f"Failed to fetch weather: {response.status_code}")
-    return response.json()
 
-tools = [add_pdf, get_weather, retriever_tool]
+tools = [add_file, wiki_search, retriever_tool]
 
 model = ChatOllama(model='personal:3b').bind_tools(tools)
 
