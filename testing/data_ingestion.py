@@ -24,7 +24,7 @@ def load_pdf(filepath: str) -> str:
         print(f"\n--- Chunk {i+1} ---\n{chunk.page_content[:300]}")
 
     load_or_create_vector_store(chunks)
-    return
+    return "Finished Loading PDF into Store"
 
 
 

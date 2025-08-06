@@ -63,7 +63,7 @@ def get_weather(zip_code=ZIP_CODE, units="imperial") -> dict:
 
 tools = [load_pdf, get_weather, retriever_tool]
 
-model = ChatOllama(model='llama3.2:3b').bind_tools(tools)
+model = ChatOllama(model='qwen3:1.7b').bind_tools(tools)
 
 
 def model_call(state: AgentState) -> AgentState:
