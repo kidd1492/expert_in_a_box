@@ -62,7 +62,7 @@ def retriever_tool(query: str) -> str:
 
 @tool
 def add_file(filepath):
-    """This is a function to load a PDF or txt file into the FAISS vectorstore rag system"""
+    """This is a function to load a PDF or txt file into the FAISS vectorstore"""
     read_document(filepath)
     return "loaded file into store"
 
