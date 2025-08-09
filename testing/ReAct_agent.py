@@ -70,7 +70,7 @@ def add_file(filepath):
 
 tools = [add_file, wiki_search, retriever_tool]
 
-model = ChatOllama(model='personal:3b').bind_tools(tools)
+model = ChatOllama(model='llama3.2:3b').bind_tools(tools)
 
 
 def model_call(state: AgentState) -> AgentState:
@@ -80,7 +80,7 @@ def model_call(state: AgentState) -> AgentState:
     return {"messages": [response]}
 
 
-def should_continue(state: AgentState):
+def should_continue(state: AgentState): 
     messages = state["messages"]
     last_message = messages[-1]
     return "continue" if getattr(last_message, "tool_calls", None) else "end"
@@ -104,6 +104,11 @@ graph.add_conditional_edges(
 graph.add_edge("tools", "our_agent")
 
 app = graph.compile()
+
+
+
+with open("graph.png", "wb") as f:
+    f.write(app.get_graph().draw_mermaid_png())
 
 
 def print_stream(stream):
