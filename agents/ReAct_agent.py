@@ -40,6 +40,7 @@ model = ChatOllama(model='llama3.2:3b').bind_tools(tools)
 
 
 def model_call(state: AgentState) -> AgentState:
+    print(state, "\n")
     system_prompt = SystemMessage(content="You are an assistant, please answer my query to the best of your ability.")
     input_messages = [system_prompt] + state["messages"]
     response = model.invoke(input_messages)
@@ -71,6 +72,9 @@ graph.add_edge("tools", "our_agent")
 
 app = graph.compile()
 
+# Optional: Save graph visualization
+with open("graph.png", "wb") as f:
+    f.write(app.get_graph().draw_mermaid_png())
 
 def print_stream(stream):
     for s in stream:
@@ -82,6 +86,9 @@ def print_stream(stream):
             except AttributeError:
                 print(last)
 
-
-inputs = {"messages": [HumanMessage(content="what is the weather like today? what would be something good to do outside today?")]}
-print_stream(app.stream(inputs, stream_mode="values"))
+while True:
+    user_input = input("Enter Question: ")
+    if user_input.lower() in ["exit", "quit", "q"]:
+        break
+    inputs = {"messages": [HumanMessage(content=user_input)]}
+    print_stream(app.stream(inputs, stream_mode="values"))
