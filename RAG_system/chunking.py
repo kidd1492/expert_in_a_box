@@ -23,7 +23,7 @@ def chunk_text(
     # Split the raw text first
     document = Document(page_content=text)
     chunks = splitter.split_documents([document])
-    print(f"✅ Chunked into {len(chunks)} chunks.")
+    print(f"Chunked into {len(chunks)} chunks.")
 
     tagged_chunks = []
     current_section = "Introduction"

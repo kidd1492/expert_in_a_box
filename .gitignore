@@ -1,10 +1,7 @@
 venv
-/faiss_index
-__pycache__
-syllabus.txt
-test.py
 .env
-agents/out
-testing/faiss_index
-testing/logs
-langgraph_learning
+__pycache__
+test.py
+RAG_system/faiss_index
+RAG_system/logs
+

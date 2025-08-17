@@ -24,7 +24,7 @@ class AgentState(TypedDict):
 def load_vector_store(index_path="faiss_index", embedding_model_name="mxbai-embed-large:335m"):
     embeddings = OllamaEmbeddings(model=embedding_model_name)
     vector_store = FAISS.load_local(index_path, embeddings, allow_dangerous_deserialization=True)
-    print("✅ FAISS store loaded successfully!")
+    print("FAISS store loaded successfully!")
     return vector_store
 
 
@@ -125,7 +125,7 @@ def print_stream(stream):
 
 # ========== Run Agent Loop ==========
 def running_agent():
-    print("💡 RAG Agent Ready")
+    print("Rag Agent Ready")
     while True:
         user_input = input("\n📥 Question: ")
         if user_input.lower() in ["exit", "quit"]:
