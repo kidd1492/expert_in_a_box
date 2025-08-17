@@ -21,7 +21,7 @@ class AgentState(TypedDict):
 def load_vector_store(index_path="testing/faiss_index", embedding_model_name="mxbai-embed-large:335m"):
     embeddings = OllamaEmbeddings(model=embedding_model_name)
     vector_store = FAISS.load_local(index_path, embeddings, allow_dangerous_deserialization=True)
-    print("✅ FAISS store loaded successfully!")
+    print("FAISS store loaded successfully!")
     return vector_store
 
 # ===== Tools =====
@@ -56,7 +56,7 @@ tool_model = ChatOllama(model='llama3.2:3b').bind_tools(tools)
 
 # ===== Nodes =====
 def init_model_call(state: AgentState) -> AgentState:
-    print("🔧 init_model_call")
+    print("init_model_call")
     system_prompt = SystemMessage(content="""You are an assistant. Given a user question, generate a json type response:
                                     {'outline: An outline for a tutorial-style blog post, 
                                      'search_terms: A list of search terms to look up""")
@@ -67,7 +67,7 @@ def init_model_call(state: AgentState) -> AgentState:
     return {"messages": state["messages"] + [response]}
 
 def tool_model_call(state: AgentState) -> AgentState:
-    print("🔧 tool_model_call")
+    print("tool_model_call")
     system_prompt = SystemMessage(content="""You are a tool-using assistant. If search terms are present, use the tools to gather information.
                                         Use:
                                         - `retriever_tool` for LangChain/LangGraph topics
@@ -120,8 +120,8 @@ with open("graph.png", "wb") as f:
 
 # ===== Run Agent Loop =====
 def running_agent():
-    print("💡 Agent Ready")
-    user_input = input("\n📥 Question: ")    
+    print("Agent Ready")
+    user_input = input("\nQuestion: ")    
     inputs = {"messages": [HumanMessage(content=user_input)]}
     app.invoke(inputs)
 

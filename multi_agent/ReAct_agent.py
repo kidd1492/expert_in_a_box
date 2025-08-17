@@ -18,7 +18,7 @@ class AgentState(TypedDict):
 def load_vector_store(index_path="C:/Users/chris/Desktop/expert_in_a_box/testing/faiss_index", embedding_model_name="mxbai-embed-large:335m"):
     embeddings = OllamaEmbeddings(model=embedding_model_name)
     vector_store = FAISS.load_local(index_path, embeddings, allow_dangerous_deserialization=True)
-    print("✅ FAISS store loaded successfully!")
+    print("FAISS store loaded successfully!")
     return vector_store
 
 
@@ -29,8 +29,9 @@ def wiki_search(term):
     try:
         page = wk.page(term)
         response = page.content
-        with open('wikiSearch.txt', 'a', encoding='UTF-8') as file:
-            file.write(response)
+        print(response)
+        with open("output.txt", "a", encoding="utf-8") as output:
+            output.write(f"\nwiki_search: {response} \n")
     except wk.exceptions.DisambiguationError:
         response = f"Multiple options found for '{term}'. Please specify."
     except wk.exceptions.PageError:
@@ -47,6 +48,8 @@ def retriever_tool(query: str) -> str:
     vectorstore = load_vector_store(index_path=VECTOR_STORE_PATH, embedding_model_name=EMBED_MODEL)
     retriever = vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": 5})
     docs = retriever.invoke(query)
+    with open("output.txt", "a", encoding="utf-8") as output:
+        output.write("\n".join([f"Document {i+1}:\n{doc.page_content}" for i, doc in enumerate(docs)]))
     if not docs:
         return "I found no relevant information."
 
@@ -60,13 +63,16 @@ model = ChatOllama(model='llama3.2:3b').bind_tools(tools)
 
 
 def model_call(state: AgentState) -> AgentState:
-    system_prompt = SystemMessage(content="""You are an assistant, based on the following outline:
-                                  1. make 2 query terms that relate to the subject matter of the outline, 
-                                  use the FAISS vectorstore via the tool in the subject has to do with langgraph
-                                  2. make one search term for the wikipedia for any additional information.
-                                  3. use the information and the outline to write a complete step by step tutorial""")
+    system_prompt = SystemMessage(content="""You are an researcher with these tools:tools = [wiki_search, retriever_tool], based on the following Topic:
+    1. - use the retreiver_tool to exicute query about langgraph. -limit 2. 
+    2. - use the wikiSearch tool to exicute searches for additonal information. limit 2.
+    3. - use the information to write a draft blog post on the Topic: """)
     input_messages = [system_prompt] + state["messages"]
+    with open("output.txt", "a", encoding="utf-8") as output:
+        output.write(f"\nInput Message: {input_messages}\n")
     response = model.invoke(input_messages)
+    with open("output.txt", "a", encoding="utf-8") as output:
+        output.write(f"\nfinal output: {response.content}\n")
     return {"messages": [response]}
 
 
@@ -115,7 +121,8 @@ def print_stream(stream):
 
 # ========== Run Agent Loop ==========
 def running_agent(outline):
-    print("💡 RAG Agent Ready")
+    print("Agent Ready")
     user_input = outline
     inputs = {"messages": [HumanMessage(content=user_input)]}
     print_stream(app.stream(inputs, stream_mode="values"))
+
