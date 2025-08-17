@@ -127,7 +127,7 @@ def print_stream(stream):
 def running_agent():
     print("Rag Agent Ready")
     while True:
-        user_input = input("\n📥 Question: ")
+        user_input = input("\n Question: ")
         if user_input.lower() in ["exit", "quit"]:
             break
         inputs = {"messages": [HumanMessage(content=user_input)]}

@@ -15,7 +15,7 @@ class AgentState(TypedDict):
 
 
 # ========== FAISS Vector Store Setup ==========
-def load_vector_store(index_path="C:/Users/chris/Desktop/expert_in_a_box/testing/faiss_index", embedding_model_name="mxbai-embed-large:335m"):
+def load_vector_store(index_path="C:/Users/chris/Desktop/expert_in_a_box/RAG_system/faiss_index", embedding_model_name="mxbai-embed-large:335m"):
     embeddings = OllamaEmbeddings(model=embedding_model_name)
     vector_store = FAISS.load_local(index_path, embeddings, allow_dangerous_deserialization=True)
     print("FAISS store loaded successfully!")
@@ -43,7 +43,7 @@ def wiki_search(term):
 @tool
 def retriever_tool(query: str) -> str:
     """Tool that queries FAISS-indexed documents."""
-    VECTOR_STORE_PATH = "C:/Users/chris/Desktop/expert_in_a_box/testing/faiss_index"
+    VECTOR_STORE_PATH = "C:/Users/chris/Desktop/expert_in_a_box/RAG_system/faiss_index"
     EMBED_MODEL = "mxbai-embed-large:335m"
     vectorstore = load_vector_store(index_path=VECTOR_STORE_PATH, embedding_model_name=EMBED_MODEL)
     retriever = vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": 5})
