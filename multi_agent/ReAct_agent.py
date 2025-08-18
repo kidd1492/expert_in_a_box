@@ -124,5 +124,6 @@ def running_agent(outline):
     print("Agent Ready")
     user_input = outline
     inputs = {"messages": [HumanMessage(content=user_input)]}
-    print_stream(app.stream(inputs, stream_mode="values"))
+    result = app.invoke(inputs)
+    return result['messages'][-1].content
 
