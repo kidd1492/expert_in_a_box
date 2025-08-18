@@ -12,6 +12,10 @@ import wikipedia as wk
 
 class AgentState(TypedDict):
     messages: Annotated[Sequence[BaseMessage], add_messages]
+    system_prompt: str
+    topic: str
+    question: str
+    research_summary: str
 
 
 # ========== FAISS Vector Store Setup ==========
@@ -66,7 +70,7 @@ def model_call(state: AgentState) -> AgentState:
     system_prompt = SystemMessage(content="""You are an researcher with these tools:tools = [wiki_search, retriever_tool], based on the following Topic:
     1. - use the retreiver_tool to exicute query about langgraph. -limit 2. 
     2. - use the wikiSearch tool to exicute searches for additonal information. limit 2.
-    3. - use the information to write a draft blog post on the Topic: """)
+    3. - use the information to write summary of the research on the Topic: """)
     input_messages = [system_prompt] + state["messages"]
     with open("output.txt", "a", encoding="utf-8") as output:
         output.write(f"\nInput Message: {input_messages}\n")
@@ -120,10 +124,11 @@ def print_stream(stream):
 
 
 # ========== Run Agent Loop ==========
-def running_agent(outline):
+def running_agent(state:AgentState) -> AgentState:
     print("Agent Ready")
-    user_input = outline
-    inputs = {"messages": [HumanMessage(content=user_input)]}
-    result = app.invoke(inputs)
-    return result['messages'][-1].content
+    #line = f"{state["topic"]}{state['question']}"
+    #inputs = {"messages": [HumanMessage(content=line)]}
+    #state['research_summary'] = app.invoke(inputs)
+    print("\n", state, "\n")
+    return state
 
