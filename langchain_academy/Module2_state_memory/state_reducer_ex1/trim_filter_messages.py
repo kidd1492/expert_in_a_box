@@ -13,7 +13,7 @@ messages.append(HumanMessage(f"Yes, I know about whales. But what others should 
 
 #for m in messages:m.pretty_print()
 
-llm = ChatOllama(model="personal:3b")
+llm = ChatOllama(model="qwen2.5:3b")
 
 '''deletes all but the last 2 messages. '''
 def filter_messages(state:MessagesState):
@@ -36,7 +36,7 @@ builder.add_edge("chat_model", END)
 
 app = builder.compile()
 
-with open("graph2.png", "wb") as f:
+with open("trim_filter_messages.png", "wb") as f:
     f.write(app.get_graph().draw_mermaid_png())
 
 output = app.invoke({"messages": messages})

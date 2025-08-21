@@ -36,7 +36,7 @@ builder.add_edge('node_3', END)
 
 app = builder.compile()
 
-with open("graph2.png", "wb") as f:
+with open("state_reducers.png", "wb") as f:
     f.write(app.get_graph().draw_mermaid_png())
 
 try:

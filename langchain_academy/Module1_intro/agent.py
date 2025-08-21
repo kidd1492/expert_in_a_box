@@ -23,7 +23,7 @@ def subtract(a:int, b:int) -> int:
     return a - b
 
 
-llm = ChatOllama(model='personal:3b')
+llm = ChatOllama(model='qwen2.5:3b')
 
 tools = [multipy, add, subtract]
 llm_with_tools = llm.bind_tools(tools=tools)
@@ -64,7 +64,7 @@ builder.add_edge("tools", "assistant")
 
 app = builder.compile()
 
-with open("graph2.png", "wb") as f:
+with open("agent.png", "wb") as f:
     f.write(app.get_graph().draw_mermaid_png())
 
 

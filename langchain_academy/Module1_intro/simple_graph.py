@@ -49,7 +49,7 @@ builder. add_edge('node_3', END)
 app = builder.compile()
 
 # Optional: Save graph visualization
-with open("graph2.png", "wb") as f:
+with open("simple_graph.png", "wb") as f:
     f.write(app.get_graph().draw_mermaid_png())
 
 result = app.invoke({"graph_state": "hello i am chris "})

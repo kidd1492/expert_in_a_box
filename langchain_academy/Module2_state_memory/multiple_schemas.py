@@ -30,7 +30,7 @@ builder.add_edge("thinking_node", "answer_node")
 builder.add_edge("answer_node", END)
 app = builder.compile()
 
-with open("graph2.png", "wb") as f:
+with open("multiple_schemas.png", "wb") as f:
     f.write(app.get_graph().draw_mermaid_png())
 
 

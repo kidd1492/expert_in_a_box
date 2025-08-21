@@ -1,7 +1,7 @@
 # LangGraph Conditional Edge Comparison
 
 
-Both `graph.png` and `graph2.png` represent the same logical flow:  
+Both  epresent the same logical flow:  
 `__start__ → node_1 → (node_2 or node_3) → __end__`
 
 Both setups work the same at runtime
