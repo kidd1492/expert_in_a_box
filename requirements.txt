@@ -6,4 +6,4 @@ PyMuPDF>=1.23.6
 langgraph
 langchain_chroma
 wikipedia
-
+langgraph.checkpoint.sqlite

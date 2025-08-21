@@ -1,29 +1,29 @@
-from typing import Annotated, Sequence, TypedDict
-from langchain_core.messages import BaseMessage, SystemMessage, HumanMessage, AIMessage
-from langchain_ollama import ChatOllama
-from langgraph.graph.message import add_messages
-from langgraph.graph import StateGraph, END, START
 
-class AgentState(TypedDict):
-    messages: Annotated[Sequence[BaseMessage], add_messages]
+from langchain_core.messages import HumanMessage
+from langchain_ollama import ChatOllama
+from langgraph.graph import StateGraph, END, START, MessagesState
+from langgraph.checkpoint.memory import MemorySaver
+
+
+class AgentState(MessagesState):
+    pass
 
 model = ChatOllama(model='llama3.2:3b')
+memory = MemorySaver()
 
-def model_call(state: AgentState) -> AgentState:
-    system_prompt = SystemMessage(content="You are an assistant, please answer my query to the best of your ability.")
-    input_messages = [system_prompt] + state["messages"]
-    response = model.invoke(input_messages)
-    state["messages"].append(response)
-    print(f"\nAI: {response.content}")
-    return {"messages": state["messages"]}
+def model_call(state: AgentState):
+    messages = state["messages"]
+    response = model.invoke(messages)
+    return {"messages": response}
+
 
 graph = StateGraph(AgentState)
 graph.add_node('Agent', model_call)
 graph.add_edge(START, 'Agent')
 graph.add_edge('Agent', END)
-agent = graph.compile()
+app = graph.compile(checkpointer=memory)
 
-conversation_history: Sequence[BaseMessage] = []
+config = {"configurable": {"thread_id": "1"}}
 
 print("Agent Ready")
 while True:
@@ -31,7 +31,6 @@ while True:
     if user_input.lower() in ["exit", "quit", "q"]:
         break
 
-    conversation_history.append(HumanMessage(content=user_input))
-    inputs = {"messages": conversation_history}
-    result = agent.invoke(inputs)
-    conversation_history = result["messages"]
+    output = app.invoke({"messages": [HumanMessage(content=user_input)]}, config) 
+    for m in output['messages'][-1:]:
+        m.pretty_print()
