@@ -3,7 +3,7 @@
 When I setup how they showed in the course it detatched the nodes
 from the rest of the graph. I ran it both way and had the same result. 
 
-Both  resent the same logical flow:  
+Both have the same logical flow:  
 `__start__ → node_1 → (node_2 or node_3) → __end__`
 
 Both setups work the same at runtime
