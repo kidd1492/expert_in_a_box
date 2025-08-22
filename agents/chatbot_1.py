@@ -1,11 +1,8 @@
-import os
 from typing import TypedDict, List, Union
 from langchain_core.messages import HumanMessage, AIMessage
 from langchain_ollama import OllamaLLM
 from langgraph.graph import StateGraph, START, END
-from dotenv import load_dotenv
 
-load_dotenv()
 
 class AgentState(TypedDict):
     messages: List[Union[HumanMessage, AIMessage]]

@@ -67,8 +67,12 @@ app = builder.compile()
 with open("agent.png", "wb") as f:
     f.write(app.get_graph().draw_mermaid_png())
 
+while True:
+    user_input = input("Enter Question: ")
+    if user_input.lower() in ["exit", "quit", "q"]:
+        break
 
-messages = HumanMessage(content="add 3 plus 3, then multipy the sum by 2. and finally subtract 1?")
-messages = app.invoke({"messages":messages})
-for m in messages["messages"]:
-    m.pretty_print()
+    messages = HumanMessage(content=user_input)
+    messages = app.invoke({"messages":messages})
+    for m in messages["messages"]:
+        m.pretty_print()

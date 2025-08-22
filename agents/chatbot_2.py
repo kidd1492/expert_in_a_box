@@ -18,10 +18,13 @@ def model_call(state: AgentState):
 
 
 graph = StateGraph(AgentState)
-graph.add_node('Agent', model_call)
-graph.add_edge(START, 'Agent')
-graph.add_edge('Agent', END)
+graph.add_node('bot', model_call)
+graph.add_edge(START, 'bot')
+graph.add_edge('bot', END)
 app = graph.compile(checkpointer=memory)
+
+with open("chatbot_2.png", "wb") as f:
+    f.write(app.get_graph().draw_mermaid_png())
 
 config = {"configurable": {"thread_id": "1"}}
 
