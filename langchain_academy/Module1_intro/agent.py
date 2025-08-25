@@ -1,12 +1,13 @@
 from langchain_ollama import ChatOllama
-from langchain_core.messages import HumanMessage, SystemMessage
+from langchain_core.messages import HumanMessage, SystemMessage, AIMessage, BaseMessage
 from langgraph.graph import MessagesState, START, END, StateGraph
 from langgraph.prebuilt import tools_condition, ToolNode
+from typing import Annotated, Sequence, TypedDict
+from langgraph.graph.message import add_messages
 
-
-class State(MessagesState):
-    pass
-
+class AgentState(MessagesState):
+    #messages: Annotated[Sequence[BaseMessage], add_messages]
+    count: int
 
 def multipy(a:int, b:int) -> int:
     '''this function multipies two numbers'''
@@ -32,8 +33,9 @@ sys_msg = SystemMessage(content="""You are a helpful assistant tasked with perfo
                          you have tools = [multipy, add, subtract] arg a:int, b:int""")
 
 
-def assistant(state: MessagesState):
-    return {"messages": [llm_with_tools.invoke([sys_msg] + state["messages"])]}
+def assistant(state: AgentState):
+    count = state["count"] + 1
+    return {"messages": [llm_with_tools.invoke([sys_msg] + state["messages"])], "count": count}
 
 '''
 def should_continue(state: MessagesState):
@@ -42,7 +44,7 @@ def should_continue(state: MessagesState):
     return "continue" if getattr(last_message, "tool_calls", None) else "end"
 '''
 
-builder = StateGraph(MessagesState)
+builder = StateGraph(AgentState)
 
 builder.add_node("assistant", assistant)
 builder.add_node("tools", ToolNode(tools=tools))
@@ -72,7 +74,10 @@ while True:
     if user_input.lower() in ["exit", "quit", "q"]:
         break
 
+
+
     messages = HumanMessage(content=user_input)
-    messages = app.invoke({"messages":messages})
+    messages = app.invoke({"messages":messages, "count":0})
     for m in messages["messages"]:
         m.pretty_print()
+    print(messages["count"])

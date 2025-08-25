@@ -37,5 +37,6 @@ app = builder.compile()
 with open("chain.png", "wb") as f:
     f.write(app.get_graph().draw_mermaid_png())
 
-message = app.invoke({"messages": HumanMessage(content="what is 3 times 3?")})
-print(message)
+messages = app.invoke({"messages": HumanMessage(content="what is 3 times 3?")})
+for m in messages["messages"]:
+        m.pretty_print()
