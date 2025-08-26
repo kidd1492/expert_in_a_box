@@ -1,9 +1,6 @@
 # Local Agent using Ollama, Langgraph
 
 
-This repository is a personal sandbox for experimenting with agentic AI systems using LangGraph, LangChain, and Ollama—all running locally on a laptop. 
-
-It’s a fun and practical way to explore how agents can reason, retrieve, and collaborate to solve tasks. From simple chatbots to multi-agent orchestration, this project reflects a hands-on journey into modular design, retrieval workflows, and educational applications.
 
 ## Project Overview
 
@@ -13,18 +10,7 @@ The goal of this project is to:
 - Run everything locally using Ollama for privacy.
 - Explore streaming responses, memory, and conditional routing
 - Develop a foundation for scalable, adaptive learning system.
-
-
-### `agents/`
-
-Contains prototypes of various agents:
-
-| File                   | Description                                         
-| `RagAgent.py`          | RAG using Chroma                                   
-| `ReAct_agent.py`       | Agent using ReAct-style reasoning and tool use      
-| `chatbot_2.py`         | Intermediate chatbot with enhanced logic            
-| `simple_chatbot.py`    | Minimal chatbot for baseline testing                
-| `streaming_chatbot.py` | Chatbot with streaming response capabilities        
+      
 
 ### `RAG_system/`
 
@@ -47,16 +33,7 @@ A ReAct-style agent with retrieval and ingestion tools. It acts as a local-first
 | `log_handler.py`   | Logs ingested files for traceability                     
 | `graph.png`        | Visual flowchart of the agent's decision logic           
 
-### `multi_agent/`
 
-An experimental setup for multi-agent collaboration. It tests how agents can communicate and delegate tasks to reach a shared goal.
-
-**Workflow:**
-
-1. Chatbot agent (`test_prompt.py`) receives a topic and generates 5 clarifying questions.
-2. ReAct agent (`ReAct_agent.py`) receives the topic and questions, performs research via Wikipedia and FAISS, and returns a summary.
-3. The system updates shared state with the findings.
-4. Current research focus: exchanging state between agents using LangGraph.
 
 ## Setup Instructions
 
