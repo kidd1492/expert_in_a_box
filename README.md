@@ -1,6 +1,9 @@
 # Local Agent using Ollama, Langgraph
 
 
+This repository is a personal sandbox for experimenting with agentic AI systems using LangGraph, LangChain, and Ollama—all running locally on a laptop. 
+
+It’s a fun and practical way to explore how agents can reason, retrieve, and collaborate to solve tasks. From simple chatbots to multi-agent orchestration, this project reflects a hands-on journey into modular design, retrieval workflows, and educational applications.
 
 ## Project Overview
 
@@ -10,7 +13,18 @@ The goal of this project is to:
 - Run everything locally using Ollama for privacy.
 - Explore streaming responses, memory, and conditional routing
 - Develop a foundation for scalable, adaptive learning system.
-      
+
+
+### `agents/`
+
+Contains prototypes of various agents:
+
+| File                   | Description                                         
+| `RagAgent.py`          | RAG using Chroma  
+| `chatbot_1.py`         | Minimal chatbot for baseline testing                                       
+| `chatbot_2.py`         | chatbot using checkpointer-memory and MessageState                            
+| `conversation.py`      | using 2 bots to have a conversation for a set number of turns. 
+                           The topic of the conversation is what my 9th grader is learning about at school.        
 
 ### `RAG_system/`
 
