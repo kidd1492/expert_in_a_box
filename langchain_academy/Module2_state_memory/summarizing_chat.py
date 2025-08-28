@@ -7,7 +7,7 @@ from langgraph.checkpoint.memory import MemorySaver
 class State(MessagesState):
     summary: str
 
-model = ChatOllama(model="qwen2.5:3b")
+model = ChatOllama(model="llama3.2:3b")
 
 
 def call_model(state: State):

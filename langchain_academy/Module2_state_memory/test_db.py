@@ -1,6 +1,6 @@
 import _sqlite3
 
-database_path = "db.sqlite"
+database_path = "example.db"
 conn = _sqlite3.connect(database_path)
 '''
 # If you want to work on a specific table or perform operations that require opening an existing connection,
