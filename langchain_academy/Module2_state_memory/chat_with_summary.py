@@ -36,7 +36,7 @@ def chat(state: AgentState):
         messages = state["messages"]
 
     response = model.invoke(messages)
-    print("\n", response.content)
+    print("\n", response)
     return {"messages": response}
 
 
