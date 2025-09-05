@@ -103,4 +103,3 @@ with open("graph.png", "wb") as f:
 config = {"configurable": {"thread_id": "1"}}
 output = app.invoke({}, config)
 print(f"\n\n{app.get_state(config).values.get("summary","")}\n\n")
-
