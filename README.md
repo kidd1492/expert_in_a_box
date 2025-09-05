@@ -16,6 +16,11 @@ This repository is a personal sandbox for experimenting with agentic AI systems 
 - Integrate external lookup (e.g., web search)
 - Support continuous querying of ingested documents
 
+<p align="center">
+  <img src="rag/graph.png" alt="Agent Flowchart">
+</p>
+
+
 ### `RagAgent.py`
 
 This is a complete one-shot RAG agent. It ingests a file, chunks it, runs the embedding model, and creates a Chroma database. It then takes the user's input, retrieves relevant information, returns a response, and ends the session. While useful for one-off queries, it's limited in long-term utility. To improve this, I added modularity and broke the components down into the `RAG_system` directory.
