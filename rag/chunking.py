@@ -2,12 +2,12 @@ from typing import List
 from langchain.docstore.document import Document
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 import re
-import os
+from log_handler import app_logger
 
 def chunk_text(
     text: str,
     source_name: str = "unknown_source",
-    chunk_size: int = 500,
+    chunk_size: int = 1500,
     chunk_overlap: int = 100
 ) -> List[Document]:
     """Chunk PDF text and tag each with metadata like topic and section."""
@@ -23,6 +23,7 @@ def chunk_text(
     # Split the raw text first
     document = Document(page_content=text)
     chunks = splitter.split_documents([document])
+    app_logger.info(f"Chunked into {len(chunks)} chunks.")
     print(f"Chunked into {len(chunks)} chunks.")
 
     tagged_chunks = []

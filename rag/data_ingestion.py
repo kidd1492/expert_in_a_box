@@ -2,6 +2,7 @@ from embedding import load_or_create_vector_store
 import fitz  # PyMuPDF
 import re
 from chunking import chunk_text
+from log_handler import app_logger, project_logger
 
 
 def read_document(filepath):
@@ -10,14 +11,18 @@ def read_document(filepath):
         text = load_pdf(filepath)
         chunks = chunk_text(text, chunk_size=500, chunk_overlap=50)
         load_or_create_vector_store(chunks)
+        app_logger.info(f"{filepath} writen to FAISS Vectorstore")
         return "Finished Loading PDF into Store"
+    
     elif ext == "txt":
         with open(filepath, 'r', encoding='UTF-8') as file:
             text = file.read()
             chunks = chunk_text(text, chunk_size=500, chunk_overlap=50)
             load_or_create_vector_store(chunks)
+            app_logger.info(f"{filepath} writen to FAISS Vectorstore")
             return "Finished Loading PDF into Store"
     else:
+        project_logger.error(f"Error could not read file: {filepath}")
         print("could not read ext")
 
 
@@ -27,6 +32,7 @@ def load_pdf(filepath: str) -> str:
         doc = fitz.open(filepath)
         text = "\n".join([page.get_text() for page in doc])
     except Exception as e:
+        project_logger.error(f"Error writing project data to {filepath}: {e}")
         raise RuntimeError(f"Failed to load PDF: {e}")
 
     # Clean the text (preserve newlines, normalize spacing)

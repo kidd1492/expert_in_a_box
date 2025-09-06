@@ -1,3 +1,4 @@
+from log_handler import app_logger
 from langchain_core.messages import SystemMessage, HumanMessage, RemoveMessage
 from langchain_ollama import ChatOllama
 from langgraph.graph import StateGraph, START, END, MessagesState
@@ -5,8 +6,6 @@ from langgraph.prebuilt import ToolNode
 from tool_file import add_file, wiki_search, retriever_tool
 from langgraph.checkpoint.sqlite import SqliteSaver
 import sqlite3
-
-
 
 class AgentState(MessagesState):
     summary : str

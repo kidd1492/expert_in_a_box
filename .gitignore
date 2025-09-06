@@ -7,3 +7,4 @@ RAG_system/logs
 rag/faiss_index
 example.db
 .env
+/rag/logs
