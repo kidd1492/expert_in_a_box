@@ -8,7 +8,7 @@ def chunk_text(
     text: str,
     source_name: str = "unknown_source",
     chunk_size: int = 1500,
-    chunk_overlap: int = 100
+    chunk_overlap: int = 300
 ) -> List[Document]:
     """Chunk PDF text and tag each with metadata like topic and section."""
     if not text or not isinstance(text, str):

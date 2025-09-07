@@ -8,3 +8,4 @@ rag/faiss_index
 example.db
 .env
 /rag/logs
+wikiSearch.txt
