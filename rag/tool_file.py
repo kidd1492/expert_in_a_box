@@ -31,15 +31,17 @@ def wiki_search(term):
 
 
 @tool
-def retriever_tool(query: str) -> str:
-    """Tool that queries FAISS-indexed documents."""
-    print(f".tool_call : retriever_tool \n")
+def retriever_tool(query: str, search_type: str = "mmr") -> str:
+    """Tool that queries FAISS-indexed documents using specified search type.
+    Use 'mmr' for diverse results, or 'similarity' for most relevant matches."""
+
+    print(f".tool_call : retriever_tool with search_type={search_type}\n")
     VECTOR_STORE_PATH = "faiss_index"
     EMBED_MODEL = "mxbai-embed-large:335m"
     vectorstore = load_vector_store(index_path=VECTOR_STORE_PATH, embedding_model_name=EMBED_MODEL)
 
     retriever = vectorstore.as_retriever(
-    search_type="mmr",
+    search_type=search_type,
     search_kwargs={
         "k": 3,
         "lambda_mult": 0.9  # Controls relevance vs diversity
