@@ -17,7 +17,7 @@ def read_document(filepath):
     elif ext == "txt":
         with open(filepath, 'r', encoding='UTF-8') as file:
             text = file.read()
-            chunks = chunk_text(text, chunk_size=500, chunk_overlap=50)
+            chunks = chunk_text(text, source_name=filepath)
             load_or_create_vector_store(chunks)
             app_logger.info(f"{filepath} writen to FAISS Vectorstore")
             return "Finished Loading PDF into Store"

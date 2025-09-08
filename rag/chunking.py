@@ -1,14 +1,13 @@
 from typing import List
 from langchain.docstore.document import Document
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-import re
 from log_handler import app_logger
 
 def chunk_text(
     text: str,
     source_name: str = "unknown_source",
-    chunk_size: int = 1500,
-    chunk_overlap: int = 300
+    chunk_size: int = 1200,
+    chunk_overlap: int = 200
 ) -> List[Document]:
     """Chunk PDF text and tag each with metadata like topic and section."""
     if not text or not isinstance(text, str):
@@ -27,26 +26,10 @@ def chunk_text(
     print(f"Chunked into {len(chunks)} chunks.")
 
     tagged_chunks = []
-    current_section = "Introduction"
-    current_topic = "General Concepts"
 
     for chunk in chunks:
         content = chunk.page_content.strip()
-
-        # Try to detect a heading — very basic
-        header_match = re.search(r"(Chapter\s+\d+:.*|^\d+\.\s+.*|#+\s*.*)", content)
-        if header_match:
-            heading = header_match.group(0)
-            # Simplify the header to extract topic name
-            current_topic = re.sub(r"(Chapter\s+\d+:|\d+\.\s+|#+)", "", heading).strip()
-            current_section = heading.strip()
-
-        metadata = {
-            "topic": current_topic,
-            "section": current_section,
-            "source": source_name
-        }
-
+        metadata = {"source": source_name}
         tagged_chunks.append(Document(page_content=content, metadata=metadata))
 
     return tagged_chunks

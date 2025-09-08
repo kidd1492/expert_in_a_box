@@ -37,11 +37,18 @@ def retriever_tool(query: str) -> str:
     VECTOR_STORE_PATH = "faiss_index"
     EMBED_MODEL = "mxbai-embed-large:335m"
     vectorstore = load_vector_store(index_path=VECTOR_STORE_PATH, embedding_model_name=EMBED_MODEL)
-    retriever = vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": 3})
+
+    retriever = vectorstore.as_retriever(
+    search_type="mmr",
+    search_kwargs={
+        "k": 3,
+        "lambda_mult": 0.9  # Controls relevance vs diversity
+        }
+    )
     docs = retriever.invoke(query)
     if not docs:
         return "I found no relevant information."
-
+    print("\n\n".join([f"Document {i+1}:\n{doc.page_content}" for i, doc in enumerate(docs)]))
     return "\n\n".join([f"Document {i+1}:\n{doc.page_content}" for i, doc in enumerate(docs)])
 
 
