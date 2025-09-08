@@ -16,7 +16,7 @@ def load_vector_store(index_path="faiss_index", embedding_model_name="mxbai-embe
 @tool
 def wiki_search(term):
     """This function will gather research information from wikipedia and append it it wikiSearch.txt"""
-    print(f".tool_call : wiki_search \n")
+    print(f".tool_call : wiki_search search_term: {term} \n")
     try:
         page = wk.page(term)
         response = page.content
@@ -31,27 +31,33 @@ def wiki_search(term):
 
 
 @tool
-def retriever_tool(query: str, search_type: str = "mmr") -> str:
+def retriever_tool(query: str, search_type: str = "similarity") -> str:
     """Tool that queries FAISS-indexed documents using specified search type.
     Use 'mmr' for diverse results, or 'similarity' for most relevant matches."""
 
-    print(f".tool_call : retriever_tool with search_type={search_type}\n")
+    print(f".tool_call : retriever_tool with search_type={search_type} query: {query}\n")
+    
     VECTOR_STORE_PATH = "faiss_index"
     EMBED_MODEL = "mxbai-embed-large:335m"
     vectorstore = load_vector_store(index_path=VECTOR_STORE_PATH, embedding_model_name=EMBED_MODEL)
 
+    # Conditional search_kwargs based on search_type
+    search_kwargs = {"k": 3}
+    if search_type == "mmr":
+        search_kwargs["lambda_mult"] = 0.7  # Controls relevance vs diversity
+
     retriever = vectorstore.as_retriever(
-    search_type=search_type,
-    search_kwargs={
-        "k": 3,
-        "lambda_mult": 0.9  # Controls relevance vs diversity
-        }
+        search_type=search_type,
+        search_kwargs=search_kwargs
     )
+
     docs = retriever.invoke(query)
     if not docs:
         return "I found no relevant information."
+    
     print("\n\n".join([f"Document {i+1}:\n{doc.page_content}" for i, doc in enumerate(docs)]))
     return "\n\n".join([f"Document {i+1}:\n{doc.page_content}" for i, doc in enumerate(docs)])
+
 
 
 @tool

@@ -1,29 +1,43 @@
-from embedding import load_or_create_vector_store
-import fitz  # PyMuPDF
+import os
 import re
+import fitz  # PyMuPDF
+
+from embedding import load_or_create_vector_store
 from chunking import chunk_text
 from log_handler import app_logger, project_logger
+from langchain.text_splitter import MarkdownTextSplitter
 
 
 def read_document(filepath):
-    ext = filepath.split(".")[-1]
+    if not os.path.exists(filepath):
+        project_logger.error(f"File not found: {filepath}")
+        return f"File not found: {filepath}"
+
+    ext = filepath.split(".")[-1].lower()
+
     if ext == "pdf":
         text = load_pdf(filepath)
-        chunks = chunk_text(text, chunk_size=500, chunk_overlap=50)
-        load_or_create_vector_store(chunks)
-        app_logger.info(f"{filepath} writen to FAISS Vectorstore")
-        return "Finished Loading PDF into Store"
-    
+        chunks = chunk_text(text, source_name=filepath)
+
     elif ext == "txt":
         with open(filepath, 'r', encoding='UTF-8') as file:
             text = file.read()
-            chunks = chunk_text(text, source_name=filepath)
-            load_or_create_vector_store(chunks)
-            app_logger.info(f"{filepath} writen to FAISS Vectorstore")
-            return "Finished Loading PDF into Store"
+        chunks = chunk_text(text, source_name=filepath)
+
+    elif ext == "md":
+        with open(filepath, 'r', encoding='UTF-8') as file:
+            markdown_text = file.read()
+        splitter = MarkdownTextSplitter(chunk_size=1000, chunk_overlap=100)
+        chunks = splitter.create_documents([markdown_text])
+        # Skip chunk_text — already chunked
+
     else:
-        project_logger.error(f"Error could not read file: {filepath}")
-        print("could not read ext")
+        project_logger.error(f"Unsupported file type: {filepath}")
+        return f"Unsupported file type: {ext}"
+
+    load_or_create_vector_store(chunks)
+    app_logger.info(f"{filepath} written to FAISS Vectorstore")
+    return f"Finished Loading {ext.upper()} into Store"
 
 
 def load_pdf(filepath: str) -> str:
@@ -32,7 +46,7 @@ def load_pdf(filepath: str) -> str:
         doc = fitz.open(filepath)
         text = "\n".join([page.get_text() for page in doc])
     except Exception as e:
-        project_logger.error(f"Error writing project data to {filepath}: {e}")
+        project_logger.error(f"Error reading PDF {filepath}: {e}")
         raise RuntimeError(f"Failed to load PDF: {e}")
 
     # Clean the text (preserve newlines, normalize spacing)
