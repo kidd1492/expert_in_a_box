@@ -9,3 +9,4 @@ example.db
 .env
 /rag/logs
 wikiSearch.txt
+rag/rag_store.db
