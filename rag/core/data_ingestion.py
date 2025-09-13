@@ -1,10 +1,7 @@
-import os
-import re
-import fitz  # PyMuPDF
-
-from embedding import load_or_create_vector_store
-from chunking import chunk_text
-from log_handler import app_logger, project_logger
+import os, re, fitz
+from core.embedding import load_or_create_vector_store
+from core.chunking import chunk_text
+from utils.log_handler import app_logger, project_logger
 from langchain.text_splitter import MarkdownTextSplitter
 
 
@@ -36,7 +33,7 @@ def read_document(filepath):
         return f"Unsupported file type: {ext}"
 
     load_or_create_vector_store(chunks)
-    app_logger.info(f"{filepath} written to FAISS Vectorstore")
+    app_logger.info(f"{filepath} written to RAG database")
     return f"Finished Loading {ext.upper()} into Store"
 
 
