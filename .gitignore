@@ -10,3 +10,5 @@ example.db
 /rag/logs
 wikiSearch.txt
 rag/rag_store.db
+rag/data/logs
+rag/data/rag_store.db
