@@ -12,3 +12,4 @@ wikiSearch.txt
 rag/rag_store.db
 rag/data/logs
 rag/data/rag_store.db
+memory_ex/rag_store.db
