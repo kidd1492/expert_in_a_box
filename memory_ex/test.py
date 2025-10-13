@@ -4,12 +4,30 @@ from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 import numpy as np
 from typing import TypedDict, List
 from memory import RAGDatabase
+import json
+
 
 model = ChatOllama(model="qwen2.5:3b")
 embedding_model = OllamaEmbeddings(model='mxbai-embed-large:335m')
 
 class AgentState(TypedDict):
     messages: HumanMessage | AIMessage
+
+
+def log_turn_metrics(turn_id, input_text, memory_context, response_text, usage):
+    log_entry = {
+        "turn": turn_id,
+        "input": input_text,
+        "retrieved_memory": memory_context,
+        "response": response_text,
+        "input_tokens": usage.get("input_tokens"),
+        "output_tokens": usage.get("output_tokens"),
+        "total_tokens": usage.get("total_tokens")
+    }
+    with open("token_metrics.jsonl", "a") as f:
+        f.write(json.dumps(log_entry) + "\n")
+
+
 
 def chat_node(state: AgentState) -> AgentState:
     db = RAGDatabase()
@@ -18,6 +36,7 @@ def chat_node(state: AgentState) -> AgentState:
     query_array = np.array(query_embedding, dtype=np.float32)
 
     # Retrieve memory if available
+    print(f"\nMemory count: {db.count()}")
     if db.count() == 0:
         memory_context = "No prior memory available."
     else:
@@ -29,7 +48,17 @@ def chat_node(state: AgentState) -> AgentState:
     full_prompt = [system_prompt, user_message]
 
     response = model.invoke(full_prompt)
-    print(response)
+    usage = response.usage_metadata
+    print(f"\n token usage: {usage}")
+    print(response.content)
+    log_turn_metrics(
+        turn_id=db.count(),  # You can increment this or timestamp it
+        input_text=user_message.content,
+        memory_context=memory_context,
+        response_text=response.content,
+        usage=usage
+    )
+
     return {"messages": [response]}
 
 def embedding_node(state: AgentState):
@@ -42,7 +71,7 @@ def embedding_node(state: AgentState):
         content=message.content,
         embedding=embedding_array
     )
-    print("Stored embedding:", embedding_array)
+    #print("Stored embedding:", embedding_array)
 
 def should_continue(state: AgentState):
     message = state['messages'][0]
