@@ -1,7 +1,7 @@
 venv
 .env
 __pycache__
-test.py
+
 RAG_system/faiss_index
 RAG_system/logs
 rag/faiss_index
