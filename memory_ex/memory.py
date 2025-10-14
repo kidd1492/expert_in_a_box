@@ -33,7 +33,7 @@ class RAGDatabase:
         cursor.execute("SELECT COUNT(*) FROM messages")
         return cursor.fetchone()[0]
 
-    def search_similar(self, query_embedding: np.ndarray, top_k: int = 3, threshold: float = 0.6) -> List[Tuple[str, str]]:
+    def search_similar(self, query_embedding: np.ndarray, top_k: int = 5, threshold: float = 0.5) -> List[Tuple[str, str]]:
         cursor = self.conn.cursor()
         cursor.execute("SELECT role, content, embedding FROM messages")
         results = []

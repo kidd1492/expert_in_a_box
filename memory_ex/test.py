@@ -28,7 +28,6 @@ def log_turn_metrics(turn_id, input_text, memory_context, response_text, usage):
         f.write(json.dumps(log_entry) + "\n")
 
 
-
 def chat_node(state: AgentState) -> AgentState:
     db = RAGDatabase()
     user_message = state['messages'][0]
@@ -40,12 +39,13 @@ def chat_node(state: AgentState) -> AgentState:
     if db.count() == 0:
         memory_context = "No prior memory available."
     else:
-        retrieved = db.search_similar(query_array, top_k=3)
+        retrieved = db.search_similar(query_array, top_k=5)
         memory_context = "\n".join([f"{role}: {content}" for role, content in retrieved]) or "No relevant memory found."
 
     # Construct prompt
-    system_prompt = SystemMessage(content="Use the following memory to inform your response:\n" + memory_context)
+    system_prompt = SystemMessage(content="Use the following conversation to inform your response:\n" + memory_context)
     full_prompt = [system_prompt, user_message]
+    print(f"\nfull_prompt: {full_prompt}\n")
 
     response = model.invoke(full_prompt)
     usage = response.usage_metadata
@@ -91,9 +91,6 @@ graph.add_conditional_edges('embedding_node', should_continue, {
 })
 graph.add_edge('chat_node', 'embedding_node')
 agent = graph.compile()
-
-with open("graph.png", "wb") as f:
-    f.write(agent.get_graph().draw_mermaid_png())
 
 user_input = input("Enter Question: ")
 inputs = {"messages": [HumanMessage(content=user_input)]}
