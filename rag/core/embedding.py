@@ -1,7 +1,7 @@
 import json
 import numpy as np
 from langchain_ollama import OllamaEmbeddings
-from langchain.docstore.document import Document
+from langchain_core.documents import Document
 from core.vectors import RAGDatabase  # Your new class-based DB module
 
 # Initialize embedding model and database

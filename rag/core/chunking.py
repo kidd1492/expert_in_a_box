@@ -1,6 +1,6 @@
 from typing import List
-from langchain.docstore.document import Document
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_core.documents import Document
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 from utils.log_handler import app_logger, project_logger
 
 def chunk_text(

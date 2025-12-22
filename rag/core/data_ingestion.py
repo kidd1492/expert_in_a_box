@@ -2,7 +2,7 @@ import os, re, fitz
 from core.embedding import load_or_create_vector_store
 from core.chunking import chunk_text
 from utils.log_handler import app_logger, project_logger
-from langchain.text_splitter import MarkdownTextSplitter
+from langchain_text_splitters import MarkdownTextSplitter
 
 
 def read_document(filepath):

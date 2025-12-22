@@ -59,7 +59,7 @@ def add_file(filepath: str) -> str:
     
 
 tools = [add_file, wiki_search, retriever_tool]
-model = ChatOllama(model='qwen2.5:3b').bind_tools(tools)
+model = ChatOllama(model='qwen3:1.7b').bind_tools(tools)
 
 def should_continue(state:AgentState):
     if state['messages'][-1].content.lower() in ["exit", "quit", "q"]:
