@@ -1,14 +1,16 @@
 from langchain_core.messages import SystemMessage, HumanMessage
-from langgraph.graph import StateGraph, START, END
+from langgraph.graph import StateGraph, START, END, MessagesState
 from langgraph.prebuilt import ToolNode
-from langgraph.graph import MessagesState
 from langchain_ollama import ChatOllama
 from langchain_core.messages import RemoveMessage
 from utils.log_handler import app_logger, project_logger
-from core.vectors import RAGDatabase
 from tools_folder.tool_file import *
+from agents.memory import MemoryStore
+from agents.vectors import VectorStore
 
-db = RAGDatabase()
+memory = MemoryStore()
+vectors= VectorStore()
+
 class AgentState(MessagesState):
     summary : str
     thread_id : str
@@ -39,7 +41,7 @@ def should_continue(state:AgentState):
         thread_id = state.get("thread_id")
         summary = state.get("summary", "")
         messages = [m.content for m in state.get("messages", [])]
-        db.save_memory(thread_id, summary, messages)
+        memory.save_memory(thread_id, summary, messages)
         project_logger.info(f"Session finalized and memory saved. Thread_id: {thread_id}")
         return "end"
     elif len(state["messages"]) > 6:
@@ -62,7 +64,7 @@ def summary_node(state: AgentState):
     response = model.invoke(messages)
 
     delete_messages = [RemoveMessage(id=m.id) for m in state["messages"][:-2]]
-    db.save_memory(
+    memory.save_memory(
         thread_id=state["thread_id"],
         summary=response.content,
         messages=[m.content for m in state["messages"][-2:]]

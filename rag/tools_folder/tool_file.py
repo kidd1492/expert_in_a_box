@@ -4,10 +4,10 @@ from core.data_ingestion import read_document
 import wikipedia as wk
 from langchain_core.tools import tool
 import numpy as np
-from core.vectors import RAGDatabase
+from agents.vectors import VectorStore
 
 
-db = RAGDatabase()
+vectors = VectorStore()
 
 EMBED_MODEL = "mxbai-embed-large:335m"
 embedding_model = OllamaEmbeddings(model=EMBED_MODEL)
@@ -35,7 +35,7 @@ def retriever_tool(query: str, search_type: str = "similarity") -> str:
     '''This function is used to query the vectorstore to retreive similarity or mmr search_type'''
     project_logger.info(f".tool_call : retriever_tool with search_type={search_type} query: {query}\n")
     query_embedding = np.array(embedding_model.embed_query(query), dtype=np.float32)
-    results = db.query_documents(query_embedding, search_type)
+    results = vectors.query_documents(query_embedding, search_type)
 
     if not results:
         return "I found no relevant information."

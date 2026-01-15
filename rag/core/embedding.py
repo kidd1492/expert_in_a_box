@@ -2,12 +2,14 @@ import json
 import numpy as np
 from langchain_ollama import OllamaEmbeddings
 from langchain_core.documents import Document
-from core.vectors import RAGDatabase  # Your new class-based DB module
+from agents.vectors import VectorStore
+
+vectors = VectorStore()
 
 # Initialize embedding model and database
 EMBED_MODEL = "mxbai-embed-large:335m"
 embedding_model = OllamaEmbeddings(model=EMBED_MODEL)
-db = RAGDatabase()
+
 
 def load_or_create_vector_store(chunks: list[Document], model_name: str = EMBED_MODEL) -> str:
     """
@@ -30,7 +32,7 @@ def load_or_create_vector_store(chunks: list[Document], model_name: str = EMBED_
         embedding_array = np.array(embedding, dtype=np.float32)
 
         # Store in database
-        db.add_document(content, title, metadata_json, embedding_array)
+        vectors.add_document(content, title, metadata_json, embedding_array)
         stored_count += 1
 
     print(f"Stored {stored_count} chunks with embeddings.")
