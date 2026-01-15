@@ -1,39 +1,26 @@
-import json
+# core/embedding.py
 import numpy as np
 from langchain_ollama import OllamaEmbeddings
 from langchain_core.documents import Document
-from agents.vectors import VectorStore
 
-vectors = VectorStore()
-
-# Initialize embedding model and database
 EMBED_MODEL = "mxbai-embed-large:335m"
 embedding_model = OllamaEmbeddings(model=EMBED_MODEL)
 
 
-def load_or_create_vector_store(chunks: list[Document], model_name: str = EMBED_MODEL) -> str:
-    """
-    Loads an existing vector store or creates one from provided chunks.
-    Accepts List[Document] and stores them using Ollama embeddings.
-    """
-    if not chunks or not isinstance(chunks[0], Document):
-        raise ValueError("Chunks must be a non-empty list of LangChain Document objects.")
+def embed_text(text: str) -> np.ndarray:
+    embedding = embedding_model.embed_query(text)
+    return np.array(embedding, dtype=np.float32)
 
-    stored_count = 0
 
+def embed_documents(chunks: list[Document]) -> list[tuple[str, dict, np.ndarray]]:
+    """
+    Returns a list of (content, metadata, embedding_array)
+    without touching the database.
+    """
+    results = []
     for chunk in chunks:
         content = chunk.page_content.strip()
         metadata = chunk.metadata or {}
-        title = metadata.get("title", "")
-        metadata_json = json.dumps(metadata)
-
-        # Generate embedding
-        embedding = embedding_model.embed_query(content)
-        embedding_array = np.array(embedding, dtype=np.float32)
-
-        # Store in database
-        vectors.add_document(content, title, metadata_json, embedding_array)
-        stored_count += 1
-
-    print(f"Stored {stored_count} chunks with embeddings.")
-    return f"Stored {stored_count} chunks with embeddings."
+        emb = embed_text(content)
+        results.append((content, metadata, emb))
+    return results

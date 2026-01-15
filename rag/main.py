@@ -1,5 +1,5 @@
 import sys, uuid
-from agents.memory import MemoryStore
+from core.memory import MemoryStore
 from agents.ReAct_agent import app
 from langchain_core.messages import HumanMessage
 
@@ -34,4 +34,3 @@ if __name__ == "__main__":
         messages = [HumanMessage(content=m) for m in messages_list]
         print(f"Loaded memory for thread {thread_id}")
         app.invoke({"summary": summary, "messages": messages, 'thread_id': thread_id})
-
