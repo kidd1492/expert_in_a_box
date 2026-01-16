@@ -16,7 +16,8 @@ def wiki_search(term):
     try:
         page = wk.page(term)
         response = page.content
-        with open('wikiSearch.txt', 'a', encoding='UTF-8') as file:
+        output_file = f"{term}.txt"
+        with open(output_file, 'a', encoding='UTF-8') as file:
             file.write(response)
     except wk.exceptions.DisambiguationError:
         response = f"Multiple options found for '{term}'. Please specify."

@@ -30,8 +30,9 @@ def chunk_text(
 
     for chunk in chunks:
         content = chunk.page_content.strip()
+        page_number = chunk.id
         #TODO add some metadata to add to the dict
-        metadata = {"source": source_name}
+        metadata = {"source": source_name, "page_number": page_number}
         tagged_chunks.append(Document(page_content=content, metadata=metadata))
 
     return tagged_chunks

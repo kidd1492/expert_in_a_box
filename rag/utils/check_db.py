@@ -1,12 +1,12 @@
 import _sqlite3
 
-database_path = "data/rag_store.db"
+database_path = "C:/Users/chris/Desktop/expert_in_a_box/rag/data/rag_store.db"
 conn = _sqlite3.connect(database_path)
 
 # If you want to work on a specific table or perform operations that require opening an existing connection,
 # you would do something like this:
 cursor = conn.cursor()
-cursor.execute("SELECT * FROM memory") 
+cursor.execute("SELECT metadata FROM documents") 
 rows = cursor.fetchall() 
 for row in rows: print(row)
 '''

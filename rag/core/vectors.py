@@ -7,6 +7,7 @@ class VectorStore:
     def __init__(self, db_path="data/rag_store.db"):
         self.conn = sqlite3.connect(db_path, check_same_thread=False)
         self._init_schema()
+        
 
     def _init_schema(self):
         cursor = self.conn.cursor()
@@ -41,6 +42,7 @@ class VectorStore:
             VALUES (?, ?)
         """, (doc_id, embedding.tobytes()))
         self.conn.commit()
+
 
     def query_documents(self, query_embedding: np.ndarray, search_type="similarity", top_k=3) -> List[Tuple[str, str]]:
         cursor = self.conn.cursor()
