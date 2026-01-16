@@ -15,3 +15,6 @@ class MemoryService:
 
     def last_thread_id(self) -> Optional[str]:
         return self.memory_store.get_last_thread_id()
+    
+    def conversation_history(self):
+        return self.memory_store.conversation_history(self)

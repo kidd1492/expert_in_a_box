@@ -56,4 +56,14 @@ class MemoryStore:
         """)
         row = cursor.fetchone()
         return row[0] if row else None
+    
+
+    def conversation_history(self) -> Optional[str]:
+        cursor = self.conn.cursor()
+        cursor.execute("""
+            SELECT title FROM documents
+        """)
+        rows = cursor.fetchall()
+        print(rows)
+        return rows if rows else None
 
