@@ -2,12 +2,12 @@
 import os, re, fitz
 from langchain_text_splitters import MarkdownTextSplitter
 from core.chunking import chunk_text
-from utils.log_handler import app_logger, project_logger
+from utils.log_handler import error_logger
 
 
 def read_document(filepath: str):
     if not os.path.exists(filepath):
-        project_logger.error(f"File not found: {filepath}")
+        error_logger.error(f"File not found: {filepath}")
         return None, f"File not found: {filepath}"
 
     ext = filepath.split(".")[-1].lower()
@@ -28,7 +28,7 @@ def read_document(filepath: str):
         chunks = splitter.create_documents([markdown_text])
 
     else:
-        project_logger.error(f"Unsupported file type: {filepath}")
+        error_logger.error(f"Unsupported file type: {filepath}")
         return None, f"Unsupported file type: {ext}"
 
     return chunks, ext.upper()
@@ -40,7 +40,7 @@ def load_pdf(filepath: str) -> str:
         doc = fitz.open(filepath)
         text = "\n".join([page.get_text() for page in doc])
     except Exception as e:
-        project_logger.error(f"Error reading PDF {filepath}: {e}")
+        error_logger.error(f"Error reading PDF {filepath}: {e}")
         raise RuntimeError(f"Failed to load PDF: {e}")
 
     text = re.sub(r"[ \t]+", " ", text)

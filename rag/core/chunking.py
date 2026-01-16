@@ -1,7 +1,7 @@
 from typing import List
 from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from utils.log_handler import app_logger, project_logger
+from utils.log_handler import error_logger
 
 def chunk_text(
     text: str,
@@ -11,7 +11,7 @@ def chunk_text(
 ) -> List[Document]:
     """Chunk PDF text and tag each with metadata like topic and section."""
     if not text or not isinstance(text, str):
-        project_logger.error("Expected non-empty string input for chunking.")
+        error_logger.error("Expected non-empty string input for chunking.")
         raise ValueError("Expected non-empty string input for chunking.")
 
     splitter = RecursiveCharacterTextSplitter(
@@ -23,7 +23,6 @@ def chunk_text(
     # Split the raw text first
     document = Document(page_content=text)
     chunks = splitter.split_documents([document])
-    project_logger.info(f"Chunked into {len(chunks)} chunks.")
     print(f"Chunked into {len(chunks)} chunks.")
 
     tagged_chunks = []

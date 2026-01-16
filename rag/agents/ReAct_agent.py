@@ -2,8 +2,7 @@ from langchain_core.messages import SystemMessage, HumanMessage, RemoveMessage
 from langgraph.graph import StateGraph, START, END, MessagesState
 from langgraph.prebuilt import ToolNode
 from langchain_ollama import ChatOllama
-
-from utils.log_handler import app_logger, project_logger
+from utils.log_handler import memory_logger
 from services.memory_service import MemoryService
 from agents.tool_file import add_file, wiki_search, retriever_tool
 
@@ -47,7 +46,7 @@ def should_continue(state: AgentState):
         messages = [m.content for m in state.get("messages", [])]
 
         memory.save(thread_id, summary, messages)
-        project_logger.info(f"Session finalized and memory saved. Thread_id: {thread_id}")
+        memory_logger.info(f"Session finalized and memory saved. Thread_id: {thread_id}")
 
         return "end"
 
@@ -82,7 +81,7 @@ def summary_node(state: AgentState):
         messages=[m.content for m in state["messages"][-2:]]
     )
 
-    project_logger.info(
+    memory_logger.info(
         f"Session summarized and memory saved. Thread_id: {state['thread_id']}"
     )
 

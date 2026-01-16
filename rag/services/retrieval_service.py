@@ -1,5 +1,4 @@
 # services/retrieval_service.py
-import numpy as np
 from core.vectors import VectorStore
 from core.embedding import embed_text
 
