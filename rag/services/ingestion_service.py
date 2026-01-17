@@ -20,7 +20,7 @@ class IngestionService:
         stored_count = 0
 
         for content, metadata, embedding_array in embedded:
-            title, page_number = metadata.get("title", "page_number")
+            title = metadata.get("title", "page_number")
             metadata_json = json.dumps(metadata)
             self.vector_store.add_document(content, title, metadata_json, embedding_array)
             stored_count += 1

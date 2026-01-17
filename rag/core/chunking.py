@@ -26,12 +26,11 @@ def chunk_text(
     print(f"Chunked into {len(chunks)} chunks.")
 
     tagged_chunks = []
-    chunck_number = 0
+
     for chunk in chunks:
         content = chunk.page_content.strip()
-        chunck_number += 1
         #TODO add some metadata to add to the dict
-        metadata = {"title": source_name, "page_number": chunck_number}
+        metadata = {"title": source_name}
         tagged_chunks.append(Document(page_content=content, metadata=metadata))
 
     return tagged_chunks
