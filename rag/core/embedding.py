@@ -20,7 +20,7 @@ def embed_documents(chunks: list[Document]) -> list[tuple[str, dict, np.ndarray]
     results = []
     for chunk in chunks:
         content = chunk.page_content.strip()
-        metadata = chunk.metadata or {}
+        metadata = dict(chunk.metadata) if chunk.metadata else {}
         emb = embed_text(content)
         results.append((content, metadata, emb))
     return results

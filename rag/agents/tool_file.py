@@ -34,6 +34,7 @@ def retriever_tool(query: str, search_type: str = "similarity") -> str:
     results = retrieval_service.retrieve(query, search_type=search_type, top_k=3)
     if not results:
         return "I found no relevant information."
+    print("\n\n".join([f"Document {i+1}:\n{content}" for i, (content, _) in enumerate(results)]))
     return "\n\n".join([f"Document {i+1}:\n{content}" for i, (content, _) in enumerate(results)])
 
 
