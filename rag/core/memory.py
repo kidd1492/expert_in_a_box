@@ -61,7 +61,7 @@ class MemoryStore:
     def conversation_history(self) -> Optional[str]:
         cursor = self.conn.cursor()
         cursor.execute("""
-            SELECT title FROM documents
+            SELECT thread_id FROM memory
         """)
         rows = cursor.fetchall()
         print(rows)
