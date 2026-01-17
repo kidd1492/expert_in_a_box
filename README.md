@@ -1,117 +1,192 @@
-# Local Agent using Ollama, LangGraph
 
-This repository is a personal sandbox for experimenting with agentic AI systems using LangGraph, LangChain, and Ollama—all running locally on a laptop.
+# Local Agent using Ollama + LangGraph  
+*A fully local, modular, agentic RAG system with ingestion, retrieval, memory, and tool routing.*
 
-**Goals:**
+This repository is my personal sandbox for building a **local‑first agentic AI system** using:
 
-Build a RAG system that I would actually use. Run everything locally using Ollama, LangGraph, and LangChain
-for privacy. Explore streaming responses, memory, chunking, ingestion, and retrieval. It should enable general question answering in a back-and-forth chat format. It should also be able to store documents of various types in a vectorstore, Implement RAG capabilities with file tracking. It should have an integrate external lookup (e.g., web search) and should support continuous querying of ingested documents.
+- **Ollama** for LLMs and embeddings  
+- **LangGraph** for agent orchestration  
+- **LangChain** for tools and document abstractions  
+- **SQLite** for vector storage and long‑term memory  
+
+Everything runs **offline**, on a laptop, with no external APIs.
+
+---
+
+## Goals
+
+Build a RAG system that I would actually use:
+
+- Local‑only execution for privacy  
+- Modular ingestion → chunking → embedding → vector storage  
+- ReAct‑style agent with tool routing  
+- Persistent conversation memory  
+- Continuous querying of ingested documents  
+- Support for PDFs, Markdown, and text files  
+- External lookup tools (e.g., Wikipedia)  
+- Clean architecture with services and separation of concerns  
 
 <p align="center">
   <img src="rag/graph.png" alt="Agent Flowchart">
 </p>
 
-### `rag/`
 
-The `rag/` directory is the heart of the system. It’s designed for modularity, extensibility, and local-first operation. Below is a breakdown of its components:
+# Project Structure
 
-### Core Modules
+The `rag/` directory is the heart of the system. It’s designed for **modularity**, **extensibility**, and **local‑first operation**.
 
-`core/`  
-Handles the ingestion, chunking, embedding, and storage of documents.
+# Core Modules (`core/`)
 
-- `chunking.py`: Splits raw text into tagged chunks with metadata (e.g., topic, section).
-- `data_ingestion.py`: Loads and cleans `.pdf`, `.txt`, and `.md` files. `.md` uses `MarkdownTextSplitter`
-   forchunking.
-- `embedding.py`: Embeds chunks using `EMBED_MODEL = "mxbai-embed-large:335m"` and stores them in a vectorstore.
-- `vectors.py`: SQLite-backed vectorstore with memory persistence, retrieval, and schema management.
+These modules implement the ingestion → chunking → embedding → storage pipeline.
 
-  I used `sqlite3` for the database and wrapped it as a class object. I did not like having two databases—one for the vectorstore and one for memory. Also, I did not like the fact that the `MemorySaver` object saves at every state update. I did not think that was called for without having an 8 or 10 step process. It is all handled here. I gave it methods for:  
-  - `add_document`: Adds documents to the embeddings table and metadata to the documents table.  
-  - `query_documents`: Supports choosing a `search_type` of similarity or MMR.  
-  - `load_memory`: Loads the summary and `state['messages']` from a `thread_id`.  
-  - `save_memory`: Saves summary and `state['messages']` when `summary_node` is called. Also saves memory when the
-     user types `exit`, `quit`, or `q`.  
-  - `get_last_thread_id`: Used to load the last memory state when one is not given as a command-line argument.
+### **`chunking.py`**
+Splits raw text into semantically meaningful chunks using `RecursiveCharacterTextSplitter`.  
+Future expansion includes richer metadata tagging (page numbers, sections, etc.).
 
-### Agent Logic
+### **`data_ingestion.py`**
+Loads and cleans:
 
-`ReAct_agent/`  
-Implements a ReAct-style agent with memory and tool routing.
+- `.pdf` (via PyMuPDF)
+- `.md` (via `MarkdownTextSplitter`)
+- `.txt`
 
-- `ReAct_agent.py`: Defines `human_node` and `chat` functions for message handling and response generation.
+Returns clean text + file type.
 
-`tools_folder/`  
-Contains tools for external lookup and document ingestion.
+### **`embedding.py`**
+Embeds text using:
 
-- `tool_file.py`: Includes Wikipedia search, file ingestion, and retrieval tools. Also defines agent routing logic via `should_continue`, `summary_node`, and `tools_condition`.
+```
+EMBED_MODEL = "mxbai-embed-large:335m"
+```
+Returns `np.float32` embeddings ready for storage.
 
-### Utilities
+### **`vectors.py` — Rewritten JSON‑Metadata VectorStore**
 
-`utils/`  
-Provides supporting functionality for logging and database checks.
+- JSON‑encoded metadata  
+- Raw float32 embedding blobs  
+- Normalized cosine similarity  
+- Clean, safe schema  
+- Round‑trip metadata handling  
 
-- `check_db.py`: Example script for inspecting the SQLite schema.
-- `log_handler.py`: Sets up structured logging for ingestion and agent actions.
+Methods:
 
-### Data & Assets
-
-`data/`  
-Stores the SQLite database (`rag_store.db`) used for memory and document embeddings.
-logs
-
-## Agent Lifecycle
-
-The agent follows a modular lifecycle:
-
-1. **Ingestion**: `add_file()` loads a document, chunks it, embeds it, and stores it in `rag_store.db`.
-2. **Interaction**: `chat()` or `human_node()` receives user input and routes it through tools or memory.
-3. **Retrieval**: `retriever_tool()` queries the vectorstore using similarity or MMR.
-4. **Memory**: `save_memory()` and `load_memory()` persist summaries and message history per thread.
-5. **Tool Routing**: `tools_condition()` and `should_continue()` determine next steps based on message content.
-
-## File Summary
-
-Here’s a quick reference of the key Python files:
-
-| File              | Purpose                                      |
-|-------------------|----------------------------------------------|
-| `main.py`         | Entry point; generates unique thread IDs     |
-| `ReAct_agent.py`  | Agent logic and message handling             |
-| `chunking.py`     | Text chunking with metadata tagging          |
-| `data_ingestion.py` | PDF, TXT, and MD reading and cleaning     |
-| `embedding.py`    | Embedding generation and storage             |
-| `vectors.py`      | SQLite-backed memory and retrieval           |
-| `tool_file.py`    | Wikipedia search, ingestion, routing logic   |
-| `check_db.py`     | Utility for inspecting database schema       |
-| `log_handler.py`  | Structured logging setup                     |
+- `add_document(content, title, metadata, embedding)`  
+- `query_documents(query_embedding, search_type="similarity", top_k=3)`  
 
 
-### `RagAgent.py`
+# Services Layer (`services/`)
 
-This is a complete one-shot RAG agent. It ingests a file, chunks it, runs the embedding model, and creates a Chroma database. It then takes the user's input, retrieves relevant information, returns a response, and ends the session. While useful for one-off queries, it's limited in long-term utility. To improve this, I added modularity and broke the components down into the `RAG_system` directory.
+A clean abstraction layer that prevents dependency triangles and keeps the agent logic simple.
 
-### `RAG_system/`
+### **`ingestion_service.py`**
+Pipeline:  
+read → chunk → embed → store  
+Returns a summary of what was ingested.
 
-A ReAct-style agent with retrieval and ingestion tools. It acts as a local-first research assistant.
+### **`retrieval_service.py`**
+Embeds a query and retrieves top‑k documents using the VectorStore.
 
-**Capabilities:**
+### **`memory_service.py`**
+Wraps the SQLite memory store for:
 
-- Wikipedia search using LangChain tools
-- Retrieval from a FAISS vectorstore
-- File ingestion (supports `.txt` and `.pdf`; more formats coming soon)
-- Logging system to track ingested files
+- loading summaries  
+- saving summaries  
+- retrieving last thread ID  
+- reading conversation history  
 
-## Future Directions
+# Agent Logic (`agent/`)
 
-- Add support for `.py`, and `.html` ingestion
-- Expand tool registry with plugin-style architecture
-- Improve metadata tagging during chunking
-- Enhance summarization and reducer logic for long-term memory
+### **`ReAct_agent.py`**
+Implements a LangGraph‑based ReAct agent with:
+
+- `human_node` → receives user input  
+- `chat` → LLM reasoning  
+- `ToolNode` → routes to tools  
+- `summary_node` → compresses memory  
+- `should_continue` → determines next step  
+- `tools_condition` → decides when to call tools  
+
+This creates a **persistent‑thread**, tool‑using, memory‑aware agent.
+
+### **`tool_file.py`**
+Defines the agent’s tools:
+
+- `wiki_search(term)`  
+- `add_file(filepath)`  
+- `retriever_tool(query, search_type)`  
+
+These tools call the services layer, not core modules directly.
+
+# Utilities (`utils/`)
+
+### **`log_handler.py`**
+Structured logging for ingestion, retrieval, and agent actions.
+
+### **`check_db.py`**
+Helper script for inspecting the SQLite schema.
 
 
-## Setup Instructions
+# Data (`data/`)
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/kidd1492/expert_in_a_box.git
+Contains:
+
+- `rag_store.db` — unified SQLite database for:
+  - vector embeddings  
+  - JSON metadata  
+  - conversation memory  
+
+
+# Agent Lifecycle
+
+1. **Ingestion**  
+   `add_file()` loads a document → chunks → embeds → stores in SQLite.
+
+2. **Interaction**  
+   `human_node()` receives user input and routes it through the graph.
+
+3. **Retrieval**  
+   `retriever_tool()` queries the VectorStore using cosine similarity or dot product.
+
+4. **Memory**  
+   `save_memory()` stores summaries + message history per thread.
+
+5. **Tool Routing**  
+   `tools_condition()` and `should_continue()` determine whether to call tools, continue reasoning, or summarize.
+
+---
+
+# 📄 File Summary
+
+| File | Purpose |
+|------|---------|
+| `main.py` | Entry point; generates unique thread IDs |
+| `ReAct_agent.py` | LangGraph agent logic |
+| `chunking.py` | Text chunking |
+| `data_ingestion.py` | PDF/TXT/MD ingestion |
+| `embedding.py` | Embedding generation |
+| `vectors.py` | JSON‑metadata SQLite vector store |
+| `tool_file.py` | Wikipedia search, ingestion, retrieval tools |
+| `ingestion_service.py` | Document ingestion pipeline |
+| `retrieval_service.py` | Query embedding + retrieval |
+| `memory_service.py` | Conversation memory |
+| `log_handler.py` | Logging |
+| `check_db.py` | DB inspection |
+
+---
+
+# Future Directions
+
+- Add ingestion for `.py`, `.html`, and `.ipynb`  
+- Richer metadata tagging (page numbers, headings, chunk indices)  
+- MMR retrieval and hybrid scoring  
+- Plugin‑style tool registry  
+- Better summarization + reducer logic for long‑term memory  
+- Document registry table for tracking sources  
+
+
+# Setup Instructions
+
+```bash
+git clone https://github.com/kidd1492/expert_in_a_box.git
+cd expert_in_a_box
+```
