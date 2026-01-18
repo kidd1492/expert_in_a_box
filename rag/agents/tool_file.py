@@ -28,10 +28,10 @@ def wiki_search(term):
     return f"response saved to {new_term}.txt"
 
 
-def retriever_tool(query: str, search_type: str = "similarity") -> str:
+def retriever_tool(query: str, search_type: str = "similarity", titles: str = "all") -> str:
     """Query the vectorstore to retrieve similarity or mmr search_type."""
-    tool_logger.info(f".tool_call : retriever_tool with search_type={search_type} query: {query}")
-    results = retrieval_service.retrieve(query, search_type=search_type, top_k=3)
+    tool_logger.info(f".tool_call : retriever_tool with search_type={search_type} query: {query} titles={titles}")
+    results = retrieval_service.retrieve(query, search_type=search_type, top_k=3, titles=titles)
     if not results:
         return "I found no relevant information."
     print("\n\n".join([f"Document {i+1}:\n{content}" for i, (content, _) in enumerate(results)]))

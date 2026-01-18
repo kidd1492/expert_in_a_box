@@ -6,9 +6,11 @@ conn = _sqlite3.connect(database_path)
 # If you want to work on a specific table or perform operations that require opening an existing connection,
 # you would do something like this:
 cursor = conn.cursor()
-cursor.execute('SELECT content FROM documents WHERE title == "neural_networks.txt"') 
+cursor.execute('SELECT messages from memory WHERE thread_id == "2"') 
 rows = cursor.fetchall() 
-for row in rows: print(row)
+for row in rows:
+    row = row[0].split(",")
+    for row in row:print(row, "\n")
 
 '''
 cursor = conn.cursor()

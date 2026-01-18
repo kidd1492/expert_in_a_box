@@ -71,19 +71,33 @@ class VectorStore:
         self,
         query_embedding: np.ndarray,
         search_type: str = "similarity",
-        top_k: int = 3
+        top_k: int = 3,
+        titles: str = "all"
     ) -> List[Tuple[str, Dict[str, Any]]]:
         """
         Returns a list of (content, metadata_dict) tuples.
         Supports:
             - cosine similarity
             - dot product
+        Optional:
+            - Filter by document title(s)
         """
 
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
-        cursor.execute("SELECT id, content, metadata, embedding FROM documents")
+        # Handle document filtering
+        if titles == "all":
+            cursor.execute("SELECT id, content, metadata, embedding FROM documents")
+        else:
+            # titles is a comma-separated string
+            title_list = [t.strip() for t in titles.split(",") if t.strip()]
+            placeholders = ",".join("?" * len(title_list))
+            cursor.execute(
+                f"SELECT id, content, metadata, embedding FROM documents WHERE title IN ({placeholders})",
+                title_list
+            )
+
         rows = cursor.fetchall()
         conn.close()
 
@@ -105,7 +119,6 @@ class VectorStore:
             if search_type == "dot":
                 score = float(np.dot(q, emb))
             else:
-                # cosine similarity
                 score = float(np.dot(q_norm, emb_norm))
 
             metadata = json.loads(metadata_json) if metadata_json else {}
@@ -116,6 +129,7 @@ class VectorStore:
 
         # Return top_k
         return [(content, metadata) for score, content, metadata in scored[:top_k]]
+
 
 
     def list_docs(self):
