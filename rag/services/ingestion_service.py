@@ -1,9 +1,9 @@
 # services/ingestion_service.py
 import json
-from core.data_ingestion import read_document
-from core.embedding import embed_documents
-from core.vectors import VectorStore
-from utils.log_handler import doc_logger, error_logger
+from rag.core.data_ingestion import read_document
+from rag.core.embedding import embed_documents
+from rag.core.vectors import VectorStore
+from rag.utils.log_handler import doc_logger, error_logger
 
 
 class IngestionService:

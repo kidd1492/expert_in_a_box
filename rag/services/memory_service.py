@@ -1,6 +1,6 @@
 # services/memory_service.py
 from typing import List, Tuple, Optional
-from core.memory import MemoryStore
+from rag.core.memory import MemoryStore
 
 
 class MemoryService:

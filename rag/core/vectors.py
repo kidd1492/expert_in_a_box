@@ -14,7 +14,7 @@ class VectorStore:
         - embedding (BLOB, raw float32 bytes)
     """
 
-    def __init__(self, db_path: str = "data/rag_store.db"):
+    def __init__(self, db_path="rag/data/rag_store.db"):
         self.db_path = db_path
         self._init_schema()
 

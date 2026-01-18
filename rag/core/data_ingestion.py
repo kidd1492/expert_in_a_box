@@ -1,8 +1,8 @@
 # core/data_ingestion.py
 import os, re, fitz
 from langchain_text_splitters import MarkdownTextSplitter
-from core.chunking import chunk_text
-from utils.log_handler import error_logger
+from rag.core.chunking import chunk_text
+from rag.utils.log_handler import error_logger
 
 
 def read_document(filepath: str):

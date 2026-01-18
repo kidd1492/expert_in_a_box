@@ -1,6 +1,6 @@
 # services/retrieval_service.py
-from core.vectors import VectorStore
-from core.embedding import embed_text
+from rag.core.vectors import VectorStore
+from rag.core.embedding import embed_text
 
 
 class RetrievalService:
