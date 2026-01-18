@@ -116,3 +116,14 @@ class VectorStore:
 
         # Return top_k
         return [(content, metadata) for score, content, metadata in scored[:top_k]]
+
+
+    def list_docs(self):
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+        cursor.execute("SELECT DISTINCT title FROM documents") 
+        docs = [row[0] for row in cursor.fetchall()]
+        conn.close()
+        for doc in docs: print(doc)
+        return docs
+        
