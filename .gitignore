@@ -2,6 +2,4 @@ venv
 .env
 __pycache__
 data
-david_hilbert.txt
-neural_networks.txt
-wikiSearch.txt
+
