@@ -48,7 +48,6 @@ class VectorStore:
         Insert a document with JSON metadata + embedding.
         Returns the inserted document ID.
         """
-
         metadata_json = json.dumps(metadata, ensure_ascii=False)
         embedding_bytes = embedding.astype(np.float32).tobytes()
 
@@ -141,3 +140,12 @@ class VectorStore:
         for doc in docs: print(doc)
         return docs
         
+
+    # returns all chunck of document to display full document in webapp
+    def retrieve_document(self, title: str):
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+        cursor.execute(f"SELECT content FROM documents WHERE title == '{title}'")
+        document = cursor.fetchall()
+        conn.close()
+        return document
