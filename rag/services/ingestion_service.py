@@ -29,6 +29,5 @@ class IngestionService:
 
             self.vector_store.add_document(content, clean_title, metadata_json, embedding_array)
 
-
         doc_logger.info(f"\'{filepath}\' written to RAG database with {stored_count} chunks")
         return f"Finished Loading {ext_or_error} into Store ({stored_count} chunks)"

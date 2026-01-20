@@ -1,4 +1,5 @@
 # agents/tool_file.py
+import os
 import wikipedia as wk
 from rag.utils.log_handler import tool_logger
 from rag.services.ingestion_service import IngestionService
@@ -11,6 +12,7 @@ retrieval_service = RetrievalService()
 def wiki_search(term):
     """This function will gather research information from wikipedia and save it to a file."""
     tool_logger.info(f".tool_call : wiki_search search_term: {term}")
+    os.makedirs("rag/data/wiki", exist_ok=True)
     try:
         page = wk.page(term)
         response = page.content

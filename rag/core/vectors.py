@@ -1,5 +1,5 @@
 import sqlite3
-import json
+import json, os
 import numpy as np
 from typing import List, Tuple, Dict, Any
 
@@ -16,6 +16,7 @@ class VectorStore:
 
     def __init__(self, db_path="rag/data/rag_store.db"):
         self.db_path = db_path
+        os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
         self._init_schema()
 
 
