@@ -39,10 +39,11 @@ def ingest():
     return jsonify({"status": result})
 
 
-@main_bp.route('/retrieve', methods=['POST'])
+@main_bp.route('/retrieve')
 def retrieve():
-    data = request.json
-    query = data.get("query")
-    titles = data.get("titles", "all")
-    results = retrieval_service.retrieve(query, titles=titles)
+    query = request.args.get("query", "")
+    titles = request.args.get("titles", "all")
+
+    results = retrieval_service.retrieve(query=query, titles=titles, top_k=5)
     return jsonify(results)
+

@@ -7,18 +7,29 @@
     <!-- LEFT COLUMN -->
     <div class="left-column">
         <h2>Documents</h2>
+
+        <label>
+            <input type="checkbox" id="select-all" onclick="toggleSelectAll()"> Select All
+        </label>
+
         {% if documents %}
             <ul class="doc-list">
                 {% for doc in documents %}
-                    <li class="doc-item" onclick="loadDocument('{{ doc }}')">
-                        {{ doc }}
+                    <li class="doc-item">
+                        <input type="checkbox" class="doc-checkbox" value="{{ doc }}">
+                        <span onclick="loadDocument('{{ doc }}')">{{ doc }}</span>
                     </li>
                 {% endfor %}
             </ul>
-
         {% else %}
             <p>No documents found.</p>
         {% endif %}
+
+        <h2>Query Documents</h2>
+        <input id="query-input" type="text" placeholder="Enter your query..." class="wiki-input">
+        <button onclick="runQuery()" class="wiki-btn">Query Selected Documents</button>
+
+
 
         <h2>Conversation History</h2>
         {% if history %}
