@@ -7,3 +7,4 @@ langgraph
 langchain_chroma
 wikipedia
 langgraph.checkpoint.sqlite
+flask

@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block body %}
+
+    <!-- LEFT COLUMN -->
+    <div class="left-column">
+        <h2>Documents</h2>
+        {% if documents %}
+            <ul class="doc-list">
+                {% for doc in documents %}
+                    <li class="doc-item" onclick="loadDocument('{{ doc }}')">
+                        {{ doc }}
+                    </li>
+                {% endfor %}
+            </ul>
+
+        {% else %}
+            <p>No documents found.</p>
+        {% endif %}
+
+        <h2>Conversation History</h2>
+        {% if history %}
+            <ul class="history-list">
+                {% for m in history %}
+                    <li>{{ m }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No memory found.</p>
+        {% endif %}
+    </div>
+
+    <!-- MIDDLE COLUMN -->
+    <div class="middle-column">
+        <h2>Chat</h2>
+        <div class="chat-window">
+            <p>Chat messages will go here…</p>
+        </div>
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="right-column">
+        <h2 id="viewer-title">Document Viewer</h2>
+
+        <div id="doc-viewer" class="doc-viewer">
+            <p>Select a document to view its content…</p>
+        </div>
+
+        <button class="ask-btn">Ask a question about this document</button>
+    </div>
+
+
+{% endblock %}

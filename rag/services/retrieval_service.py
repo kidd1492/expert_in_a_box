@@ -1,6 +1,6 @@
 # services/retrieval_service.py
-from core.vectors import VectorStore
-from core.embedding import embed_text
+from rag.core.vectors import VectorStore
+from rag.core.embedding import embed_text
 
 
 class RetrievalService:
@@ -10,4 +10,8 @@ class RetrievalService:
     def retrieve(self, query: str, search_type: str = "similarity", top_k: int = 3, titles: str = "all"):
         query_embedding = embed_text(query)
         results = self.vector_store.query_documents(query_embedding, search_type=search_type, top_k=top_k, titles=titles)
+        return results
+
+    def retrieve_doc(self, title: str):
+        results = self.vector_store.retrieve_document(title=title)
         return results

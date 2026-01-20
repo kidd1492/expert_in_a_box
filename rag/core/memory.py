@@ -3,7 +3,7 @@ from typing import List, Tuple, Optional
 
 
 class MemoryStore:
-    def __init__(self, db_path="data/rag_store.db"):
+    def __init__(self, db_path="rag/data/rag_store.db"):
         self.conn = sqlite3.connect(db_path, check_same_thread=False)
         self._init_schema()
 

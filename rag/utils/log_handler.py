@@ -2,7 +2,7 @@ import logging
 import os
 
 # Ensure 'logs' directory exists
-LOG_DIR = "data/logs"
+LOG_DIR = "rag/data/logs"
 os.makedirs(LOG_DIR, exist_ok=True)
 
 # Define log file paths

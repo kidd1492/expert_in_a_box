@@ -1,0 +1,101 @@
+/* Layout grid */
+.grid-container {
+    display: grid;
+    grid-template-columns: 25% 50% 25%;
+    height: calc(100vh - 50px);
+    gap: 10px;
+    padding: 10px;
+}
+
+/* Columns */
+.left-column,
+.middle-column,
+.right-column {
+    background: #f8f8f8;
+    padding: 15px;
+    border-radius: 8px;
+    overflow-y: auto;
+}
+
+/* Lists */
+.doc-list,
+.history-list {
+    list-style: none;
+    padding: 0;
+}
+
+.doc-list li,
+.history-list li {
+    padding: 6px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Chat window */
+.chat-window {
+    background: white;
+    border: 1px solid #ccc;
+    height: 80vh;
+    padding: 10px;
+    border-radius: 6px;
+    overflow-y: auto;
+}
+
+/* Document viewer */
+.doc-viewer {
+    background: white;
+    border: 1px solid #ccc;
+    height: 60vh;
+    padding: 10px;
+    border-radius: 6px;
+    overflow-y: auto;
+}
+
+/* Button */
+.ask-btn {
+    margin-top: 15px;
+    width: 100%;
+    padding: 10px;
+    background: #0078ff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.ask-btn:hover {
+    background: #005fcc;
+}
+
+/* Sidebar */
+.sidebar {
+    list-style: none;
+    padding: 10px;
+    background: #222;
+    color: white;
+    margin: 0;
+    display: flex;
+    gap: 20px;
+}
+
+.sidebar a {
+    color: white;
+    text-decoration: none;
+}
+
+
+.chunk-block {
+    padding: 10px;
+    margin-bottom: 12px;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+.doc-item {
+    cursor: pointer;
+    padding: 6px 0;
+}
+
+.doc-item:hover {
+    color: #0078ff;
+}

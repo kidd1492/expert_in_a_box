@@ -1,9 +1,9 @@
 # services/ingestion_service.py
-import json
-from core.data_ingestion import read_document
-from core.embedding import embed_documents
-from core.vectors import VectorStore
-from utils.log_handler import doc_logger, error_logger
+import json, os
+from rag.core.data_ingestion import read_document
+from rag.core.embedding import embed_documents
+from rag.core.vectors import VectorStore
+from rag.utils.log_handler import doc_logger, error_logger
 
 
 class IngestionService:
@@ -20,10 +20,14 @@ class IngestionService:
         stored_count = 0
 
         for content, metadata, embedding_array in embedded:
-            title = metadata.get("title")
+            raw_title = metadata.get("title")
+            clean_title = os.path.basename(raw_title)          # Backpropagation.txt
+            clean_title = os.path.splitext(clean_title)[0]     # Backpropagation
+
+            metadata["title"] = clean_title
             metadata_json = json.dumps(metadata)
-            self.vector_store.add_document(content, title, metadata_json, embedding_array)
-            stored_count += 1
+
+            self.vector_store.add_document(content, clean_title, metadata_json, embedding_array)
 
         doc_logger.info(f"\'{filepath}\' written to RAG database with {stored_count} chunks")
         return f"Finished Loading {ext_or_error} into Store ({stored_count} chunks)"

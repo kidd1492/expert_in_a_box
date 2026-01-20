@@ -1,6 +1,6 @@
 import sys, uuid
-from services.memory_service import MemoryService
-from agents.ReAct_agent import app
+from rag.services.memory_service import MemoryService
+from rag.agents.ReAct_agent import app
 from langchain_core.messages import HumanMessage
 
 memory = MemoryService()

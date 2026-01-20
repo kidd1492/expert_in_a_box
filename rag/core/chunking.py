@@ -1,7 +1,7 @@
 from typing import List
 from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from utils.log_handler import error_logger
+from rag.utils.log_handler import error_logger
 
 def chunk_text(
     text: str,
