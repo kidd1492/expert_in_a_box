@@ -34,11 +34,18 @@
 
     <!-- MIDDLE COLUMN -->
     <div class="middle-column">
-        <h2>Chat</h2>
-        <div class="chat-window">
-            <p>Chat messages will go here…</p>
+        <h2>Wiki Search</h2>
+
+        <input id="wiki-input" type="text" placeholder="Enter a Wikipedia term..." class="wiki-input">
+
+        <button onclick="runWikiSearch()" class="wiki-btn">Search Wikipedia</button>
+
+        <div id="wiki-results" class="wiki-results">
+            <p>Results will appear here…</p>
         </div>
+        <button class="ask-btn">Add document</button>
     </div>
+
 
     <!-- RIGHT COLUMN -->
     <div class="right-column">

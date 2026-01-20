@@ -34,7 +34,7 @@
 .chat-window {
     background: white;
     border: 1px solid #ccc;
-    height: 80vh;
+    height: 60vh;
     padding: 10px;
     border-radius: 6px;
     overflow-y: auto;
@@ -98,4 +98,25 @@
 
 .doc-item:hover {
     color: #0078ff;
+}
+
+
+.wiki-input {
+    width: 90%;
+    padding: 8px;
+    margin-bottom: 10px;
+}
+
+.wiki-btn {
+    padding: 8px 12px;
+    margin-bottom: 15px;
+}
+
+.wiki-results {
+    background: white;
+    border: 1px solid #ccc;
+    height: 60vh;
+    padding: 10px;
+    border-radius: 6px;
+    overflow-y: auto;
 }

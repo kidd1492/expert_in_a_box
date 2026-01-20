@@ -20,3 +20,23 @@ function loadDocument(title) {
             });
         });
 }
+
+function runWikiSearch() {
+    const term = document.getElementById("wiki-input").value.trim();
+    if (!term) {
+        alert("Please enter a search term.");
+        return;
+    }
+
+    fetch(`/wiki/${term}`)
+        .then(response => response.json())
+        .then(data => {
+            const resultsDiv = document.getElementById("wiki-results");
+            resultsDiv.innerHTML = `<p>${data.status}</p>`;
+        })
+        .catch(err => {
+            console.error("Wiki search error:", err);
+            document.getElementById("wiki-results").innerHTML = "<p>Error performing wiki search.</p>";
+        });
+}
+

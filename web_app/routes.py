@@ -1,14 +1,13 @@
 # webapp/routes.py
 from flask import Blueprint, request, jsonify, render_template
-from .models import ingestion_service, retrieval_service
+from .models import ingestion_service, retrieval_service, memory_service
+from rag.agents import tool_file
 
 
 main_bp = Blueprint('main', __name__)
 
 @main_bp.route('/')
 def index():
-    from .models import ingestion_service
-    from .models import memory_service
     history = memory_service.memory_store.conversation_history()
     docs = ingestion_service.vector_store.list_docs()
     return render_template('index.html', documents=docs, history=history)
@@ -22,6 +21,13 @@ def view_document(title):
         "title": title,
         "chunks": results
     })
+
+
+@main_bp.route('/wiki/<term>')
+def wiki_search(term):
+    result = tool_file.wiki_search(term)
+    return jsonify({"status": result})
+
 
 
 @main_bp.route('/ingest/<file_path>', methods=['POST'])

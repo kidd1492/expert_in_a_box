@@ -27,7 +27,7 @@ def wiki_search(term):
         print(f"No Wikipedia page found for '{term}'")
         response = f"No Wikipedia page found for '{term}'"
 
-    return f"response saved to {new_term}.txt"
+    return response
 
 
 def retriever_tool(query: str, search_type: str = "similarity", titles: str = "all") -> str:
