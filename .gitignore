@@ -1,17 +1,6 @@
 venv
 .env
 __pycache__
+rag/data
+data
 
-RAG_system/faiss_index
-RAG_system/logs
-rag/faiss_index
-example.db
-.env
-/rag/logs
-wikiSearch.txt
-rag/rag_store.db
-rag/data/logs
-rag/data/rag_store.db
-memory_ex/rag_store.db
-david_hilbert.txt
-neural_networks.txt
