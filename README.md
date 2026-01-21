@@ -92,7 +92,7 @@ expert_in_a_box/
 └── run.py             # Launch Flask UI
 ```
 
-## **🚧 Current Development Goals**
+## **Current Development Goals**
 - Add chatbot functionality using retrieved chunks as context  
 - Replace the legacy ReAct agent with a minimal, transparent model‑call function  
 - Auto‑refresh document list after ingestion  
