@@ -29,6 +29,19 @@ def wiki_search(term):
     return jsonify({"status": result})
 
 
+@main_bp.route('/add_wiki/<term>')
+def add_wiki(term):
+    content = tool_file.wiki_search(term)
+    new_term = term.replace(" ", "_")
+    filepath = f"rag/data/wiki/{new_term}.txt"
+    with open(filepath, "w", encoding="utf-8") as f:
+        f.write(content)
+    result = ingestion_service.add_file(filepath)
+
+    return jsonify({"status": result})
+
+
+
 
 @main_bp.route('/ingest/<file_path>', methods=['POST'])
 def ingest():

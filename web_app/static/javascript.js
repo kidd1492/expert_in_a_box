@@ -21,6 +21,7 @@ function loadDocument(title) {
         });
 }
 
+
 function runWikiSearch() {
     const term = document.getElementById("wiki-input").value.trim();
     if (!term) {
@@ -39,6 +40,26 @@ function runWikiSearch() {
             document.getElementById("wiki-results").innerHTML = "<p>Error performing wiki search.</p>";
         });
 }
+
+function addWikiSearch() {
+    const term = document.getElementById("wiki-input").value.trim();
+    if (!term) {
+        alert("Please enter a search term.");
+        return;
+    }
+
+    fetch(`/add_wiki/${term}`)
+        .then(response => response.json())
+        .then(data => {
+            const resultsDiv = document.getElementById("wiki-results");
+            resultsDiv.innerHTML = `<p>${data.status}</p>`;
+        })
+        .catch(err => {
+            console.error("Add document error:", err);
+            document.getElementById("wiki-results").innerHTML = "<p>Error adding document.</p>";
+        });
+}
+
 
 function toggleSelectAll() {
     const checked = document.getElementById("select-all").checked;
