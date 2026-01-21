@@ -16,18 +16,13 @@ def wiki_search(term):
     try:
         page = wk.page(term)
         response = page.content
-        new_term = term.replace(" ", "_")
-        output_file = f"{new_term}.txt"
-        with open(f'rag/data/wiki/{output_file}', 'a', encoding='UTF-8') as file:
-            file.write(response)
     except wk.exceptions.DisambiguationError:
         print(f"Multiple options found for '{term}'. Please specify.")
         response = f"Multiple options found for '{term}'. Please specify."
     except wk.exceptions.PageError:
         print(f"No Wikipedia page found for '{term}'")
         response = f"No Wikipedia page found for '{term}'"
-
-    return f"response saved to {new_term}.txt"
+    return response
 
 
 def retriever_tool(query: str, search_type: str = "similarity", titles: str = "all") -> str:

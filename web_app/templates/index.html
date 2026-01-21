@@ -7,19 +7,25 @@
     <!-- LEFT COLUMN -->
     <div class="left-column">
         <h2>Documents</h2>
+
+        <label>
+            <input type="checkbox" id="select-all" onclick="toggleSelectAll()"> Select All
+        </label>
+
         {% if documents %}
             <ul class="doc-list">
                 {% for doc in documents %}
-                    <li class="doc-item" onclick="loadDocument('{{ doc }}')">
-                        {{ doc }}
+                    <li class="doc-item">
+                        <input type="checkbox" class="doc-checkbox" value="{{ doc }}">
+                        <span onclick="loadDocument('{{ doc }}')">{{ doc }}</span>
                     </li>
                 {% endfor %}
             </ul>
-
         {% else %}
             <p>No documents found.</p>
         {% endif %}
 
+        
         <h2>Conversation History</h2>
         {% if history %}
             <ul class="history-list">
@@ -34,21 +40,29 @@
 
     <!-- MIDDLE COLUMN -->
     <div class="middle-column">
-        <h2>Chat</h2>
-        <div class="chat-window">
-            <p>Chat messages will go here…</p>
-        </div>
-    </div>
-
-    <!-- RIGHT COLUMN -->
-    <div class="right-column">
         <h2 id="viewer-title">Document Viewer</h2>
 
         <div id="doc-viewer" class="doc-viewer">
             <p>Select a document to view its content…</p>
-        </div>
+        </div><br/>
 
-        <button class="ask-btn">Ask a question about this document</button>
+        <input id="query-input" type="text" placeholder="Enter your query..." class="wiki-input">
+        <button onclick="runQuery()" class="wiki-btn">Query Selected Documents</button>
+    </div>
+
+
+    <!-- RIGHT COLUMN -->
+    <div class="right-column">
+        <h2>Wiki Search</h2>
+
+        <input id="wiki-input" type="text" placeholder="Enter a Wikipedia term..." class="wiki-input">
+
+        <button onclick="runWikiSearch()" class="wiki-btn">Search Wikipedia</button>
+
+        <div id="wiki-results" class="wiki-results">
+            <p>Results will appear here…</p>
+        </div>
+        <button onclick="addWikiSearch()" class="ask-btn">Add document</button>
     </div>
 
 

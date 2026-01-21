@@ -1,14 +1,13 @@
 # webapp/routes.py
 from flask import Blueprint, request, jsonify, render_template
-from .models import ingestion_service, retrieval_service
+from .models import ingestion_service, retrieval_service, memory_service
+from rag.agents import tool_file
 
 
 main_bp = Blueprint('main', __name__)
 
 @main_bp.route('/')
 def index():
-    from .models import ingestion_service
-    from .models import memory_service
     history = memory_service.memory_store.conversation_history()
     docs = ingestion_service.vector_store.list_docs()
     return render_template('index.html', documents=docs, history=history)
@@ -24,6 +23,26 @@ def view_document(title):
     })
 
 
+@main_bp.route('/wiki/<term>')
+def wiki_search(term):
+    result = tool_file.wiki_search(term)
+    return jsonify({"status": result})
+
+
+@main_bp.route('/add_wiki/<term>')
+def add_wiki(term):
+    content = tool_file.wiki_search(term)
+    new_term = term.replace(" ", "_")
+    filepath = f"rag/data/wiki/{new_term}.txt"
+    with open(filepath, "w", encoding="utf-8") as f:
+        f.write(content)
+    result = ingestion_service.add_file(filepath)
+
+    return jsonify({"status": result})
+
+
+
+
 @main_bp.route('/ingest/<file_path>', methods=['POST'])
 def ingest():
     file = request.files['file']
@@ -33,10 +52,11 @@ def ingest():
     return jsonify({"status": result})
 
 
-@main_bp.route('/retrieve', methods=['POST'])
+@main_bp.route('/retrieve')
 def retrieve():
-    data = request.json
-    query = data.get("query")
-    titles = data.get("titles", "all")
-    results = retrieval_service.retrieve(query, titles=titles)
+    query = request.args.get("query", "")
+    titles = request.args.get("titles", "all")
+
+    results = retrieval_service.retrieve(query=query, titles=titles, top_k=5)
     return jsonify(results)
+
