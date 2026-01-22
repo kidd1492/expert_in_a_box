@@ -2,11 +2,6 @@
 import os
 import wikipedia as wk
 from rag.utils.log_handler import tool_logger
-from rag.services.ingestion_service import IngestionService
-from rag.services.retrieval_service import RetrievalService
-
-ingestion_service = IngestionService()
-retrieval_service = RetrievalService()
 
 
 def wiki_search(term):
@@ -23,22 +18,3 @@ def wiki_search(term):
         print(f"No Wikipedia page found for '{term}'")
         response = f"No Wikipedia page found for '{term}'"
     return response
-
-
-def retriever_tool(query: str, search_type: str = "similarity", titles: str = "all") -> str:
-    """Query the vectorstore to retrieve similarity or mmr search_type."""
-    tool_logger.info(f".tool_call : retriever_tool with search_type={search_type} query: {query} titles={titles}")
-    results = retrieval_service.retrieve(query, search_type=search_type, top_k=3, titles=titles)
-    if not results:
-        return "I found no relevant information."
-    print("\n\n".join([f"Document {i+1}:\n{content}" for i, (content, _) in enumerate(results)]))
-    return "\n\n".join([f"Document {i+1}:\n{content}" for i, (content, _) in enumerate(results)])
-
-
-def add_file(filepath: str) -> str:
-    """Loads a PDF, TXT, or MD file into the SQLite-backed RAG store."""
-    tool_logger.info(f".tool_call : add_file file_name : {filepath}")
-    try:
-        return ingestion_service.add_file(filepath)
-    except Exception as e:
-        return f"Error loading file: {e}"

@@ -1,10 +1,9 @@
 from langchain_core.messages import SystemMessage, HumanMessage, RemoveMessage
 from langgraph.graph import StateGraph, START, END, MessagesState
-from langgraph.prebuilt import ToolNode
 from langchain_ollama import ChatOllama
 from rag.utils.log_handler import memory_logger
 from rag.services.memory_service import MemoryService
-from rag.agents.tool_file import add_file, wiki_search, retriever_tool
+
 
 memory = MemoryService()
 
@@ -32,9 +31,7 @@ def chat(state: AgentState):
 
     return {"messages": response}
 
-
-tools = [add_file, wiki_search, retriever_tool]
-model = ChatOllama(model="qwen2.5:3b").bind_tools(tools)
+model = ChatOllama(model="qwen2.5:3b")
 
 
 def should_continue(state: AgentState):
@@ -87,17 +84,10 @@ def summary_node(state: AgentState):
 
     return {"summary": response.content, "messages": delete_messages}
 
-
-def tools_condition(state: AgentState):
-    last_message = state["messages"][-1]
-    return "continue" if getattr(last_message, "tool_calls", None) else "human"
-
-
 graph = StateGraph(AgentState)
 
 graph.add_node("human_node", human_node)
 graph.add_node("chatbot", chat)
-graph.add_node("tools", ToolNode(tools=tools))
 graph.add_node("summary_node", summary_node)
 
 graph.add_edge(START, "human_node")
@@ -112,16 +102,6 @@ graph.add_conditional_edges(
     },
 )
 
-graph.add_conditional_edges(
-    "chatbot",
-    tools_condition,
-    {
-        "continue": "tools",
-        "human": "human_node",
-    },
-)
-
-graph.add_edge("tools", "chatbot")
 graph.add_edge("summary_node", "chatbot")
 
 app = graph.compile()

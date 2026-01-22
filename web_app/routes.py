@@ -9,7 +9,7 @@ main_bp = Blueprint('main', __name__)
 @main_bp.route('/')
 def index():
     history = memory_service.memory_store.conversation_history()
-    docs = ingestion_service.vector_store.list_docs()
+    docs = retrieval_service.list_docs()
     return render_template('index.html', documents=docs, history=history)
 
 
@@ -39,8 +39,6 @@ def add_wiki(term):
     result = ingestion_service.add_file(filepath)
 
     return jsonify({"status": result})
-
-
 
 
 @main_bp.route('/ingest/<file_path>', methods=['POST'])

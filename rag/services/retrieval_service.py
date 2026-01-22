@@ -15,3 +15,7 @@ class RetrievalService:
     def retrieve_doc(self, title: str):
         results = self.vector_store.retrieve_document(title=title)
         return results
+    
+    def list_docs(self):
+        results = self.vector_store.list_docs()
+        return results
