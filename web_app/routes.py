@@ -2,6 +2,7 @@
 from flask import Blueprint, request, jsonify, render_template
 from .models import ingestion_service, retrieval_service
 from rag.agents import tool_file
+from rag.agents.chat_agent import chat_with_model
 
 main_bp = Blueprint('main', __name__)
 
@@ -63,3 +64,24 @@ def retrieve():
     results = retrieval_service.retrieve(query=query, titles=titles, top_k=5)
     return jsonify(results)
 
+
+@main_bp.route('/chat')
+def chat():
+    query = request.args.get("query", "")
+    titles = request.args.get("titles", "all")
+
+    # Retrieve context
+    retrieved = retrieval_service.retrieve(
+        query=query,
+        titles=titles,
+        top_k=5
+    )
+    chunks = [c[0] for c in retrieved]
+
+    # Model call
+    answer = chat_with_model(query, chunks)
+
+    return jsonify({
+        "answer": answer,
+        "context": chunks
+    })
