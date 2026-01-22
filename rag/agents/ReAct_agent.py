@@ -103,9 +103,9 @@ graph.add_conditional_edges(
 )
 
 graph.add_edge("summary_node", "chatbot")
-
+graph.add_edge("chatbot", "human_node")
 app = graph.compile()
 
 # Optional: generate graph visualization
 #with open("graph.png", "wb") as f:
-#    f.write(app.get_graph().draw_mermaid_png())
+ #   f.write(app.get_graph().draw_mermaid_png())
