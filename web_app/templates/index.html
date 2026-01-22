@@ -24,18 +24,6 @@
         {% else %}
             <p>No documents found.</p>
         {% endif %}
-
-        
-        <h2>Conversation History</h2>
-        {% if history %}
-            <ul class="history-list">
-                {% for m in history %}
-                    <li>{{ m }}</li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>No memory found.</p>
-        {% endif %}
     </div>
 
     <!-- MIDDLE COLUMN -->
@@ -62,7 +50,10 @@
         <div id="wiki-results" class="wiki-results">
             <p>Results will appear here…</p>
         </div>
-        <button onclick="addWikiSearch()" class="ask-btn">Add document</button>
+        <button onclick="addWikiSearch()" class="ask-btn">Add Results</button>
+        <button class="ask-btn" onclick="triggerFileUpload()">Add File</button>
+        <input type="file" id="file-input" style="display:none" onchange="uploadFile()">
+
     </div>
 
 

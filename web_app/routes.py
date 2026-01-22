@@ -1,16 +1,17 @@
 # webapp/routes.py
 from flask import Blueprint, request, jsonify, render_template
-from .models import ingestion_service, retrieval_service, memory_service
+from .models import ingestion_service, retrieval_service
 from rag.agents import tool_file
-
 
 main_bp = Blueprint('main', __name__)
 
+
 @main_bp.route('/')
 def index():
-    history = memory_service.memory_store.conversation_history()
+    '''TODO see how the memory is going to be used??
+    history = memory_service.memory_store.conversation_history()'''
     docs = retrieval_service.list_docs()
-    return render_template('index.html', documents=docs, history=history)
+    return render_template('index.html', documents=docs)
 
 
 @main_bp.route('/document/<title>')
@@ -41,11 +42,15 @@ def add_wiki(term):
     return jsonify({"status": result})
 
 
-@main_bp.route('/ingest/<file_path>', methods=['POST'])
+@main_bp.route('/ingest', methods=['POST'])
 def ingest():
-    file = request.files['file']
-    filepath = f"uploads/{file.filename}"
+    file = request.files.get('file')
+    if not file:
+        return jsonify({"status": "no file"}), 400
+
+    filepath = f"rag/data/uploads/{file.filename}"
     file.save(filepath)
+
     result = ingestion_service.add_file(filepath)
     return jsonify({"status": result})
 
