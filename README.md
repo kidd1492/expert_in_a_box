@@ -7,7 +7,7 @@
 ---
 
 ## **Overview**
-**Expert‑in‑a‑Box** is a fully local, privacy‑preserving RAG platform built for developers who value transparency, control, and extensibility. It combines a clean Python RAG engine with a three‑panel Flask web interface that allows users to:
+**Expert‑in‑a‑Box** is a fully local, privacy‑preserving RAG. It combines a clean Python RAG engine with a three‑panel Flask web interface that allows users to:
 
 - Ingest documents  
 - Retrieve relevant chunks  
@@ -21,8 +21,7 @@ Every step of the ingestion and retrieval pipeline is exposed — no hidden agen
 ## **Features**
 
 ### **Retrieval‑Augmented Generation Engine**
-- Local SQLite‑backed vector store  
-- Local SQLite conversation memory  
+- Local SQLite‑backed vector store   
 - Chunking via `RecursiveCharacterTextSplitter`  
 - Embeddings generated through local Ollama models  
 - Transparent metadata (title, page number, source file)  
@@ -93,15 +92,14 @@ Loads any supported file into the RAG system.
 expert_in_a_box/
 │
 ├── rag/
-│   ├── core/              # chunking, embeddings, vectors, memory
-│   ├── services/          # ingestion, retrieval, memory services
-│   ├── agents/            # legacy ReAct agent (being simplified)
+│   ├── core/              # chunking, embeddings, vectors
+│   ├── services/          # ingestion, retrieval
+│   ├── agents/            # chat agent, tools
 │   ├── utils/             # logging, db checks
 │   └── data/
 │       ├── wiki/          # auto-generated Wikipedia documents
 │       ├── uploads/       # user-uploaded files
 │       ├── rag_store.db   # SQLite vector store
-│       └── memory.db      # conversation memory (optional)
 │
 ├── web_app/
 │   ├── templates/         # index.html, layout.html
@@ -111,7 +109,6 @@ expert_in_a_box/
 │
 ├── logs/                  # system logs
 │
-├── main.py                # CLI interaction with agent
 └── run.py                 # Launch Flask UI, ensure directories, start Ollama
 ```
 
@@ -128,17 +125,13 @@ The app will:
 
 - Ensure required directories exist  
 - Initialize the SQLite vector store  
-- Optionally start the local Ollama server  
-- Launch the Flask UI  
+- Optionally start the local Ollama server   
 ---
 
 ## **Roadmap**
-- [ ] Add chatbot functionality using retrieved chunks as context  
-- [ ] Replace legacy ReAct agent with a minimal, transparent model‑call function  
+- [ ] Add chatbot functionality using retrieved chunks as context    
 - [ ] Auto‑refresh document list after ingestion  
-- [ ] UI polish (loading indicators, success messages)  
-- [ ] Local file uploads (completed)  
-- [ ] Directory ingestion  
+- [ ] UI polish (loading indicators, success messages)    
 - [ ] Streaming responses  
 
 ---

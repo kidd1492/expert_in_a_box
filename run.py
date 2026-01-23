@@ -29,10 +29,10 @@ def ollama_installed():
 
 
 def ensure_directories():
+    os.makedirs("rag/data", exist_ok=True)  # ensures DB directory exists
     os.makedirs("rag/data/wiki", exist_ok=True)
     os.makedirs("rag/data/uploads", exist_ok=True)
-    os.makedirs("rag/data", exist_ok=True)  # ensures DB directory exists
-    os.makedirs("logs", exist_ok=True)
+    os.makedirs("rag/data/logs", exist_ok=True)
 
 
 
