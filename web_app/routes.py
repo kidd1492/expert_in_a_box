@@ -1,8 +1,7 @@
 # webapp/routes.py
 from flask import Blueprint, request, jsonify, render_template
-from .models import ingestion_service, retrieval_service
-from rag.agents import tool_file
-from rag.agents.chat_agent import chat_with_model
+from .models import ingestion_service, retrieval_service, chat_service
+from rag.core import tool_file
 
 main_bp = Blueprint('main', __name__)
 
@@ -61,27 +60,31 @@ def retrieve():
     query = request.args.get("query", "")
     titles = request.args.get("titles", "all")
 
-    results = retrieval_service.retrieve(query=query, titles=titles, top_k=5)
+    results = retrieval_service.retrieve(query=query, titles=titles, top_k=3)
     return jsonify(results)
 
 
-@main_bp.route('/chat')
+@main_bp.route("/chat")
 def chat():
     query = request.args.get("query", "")
     titles = request.args.get("titles", "all")
+    mode = request.args.get("mode", "answer")  # NEW
 
     # Retrieve context
-    retrieved = retrieval_service.retrieve(
-        query=query,
-        titles=titles,
-        top_k=5
-    )
-    chunks = [c[0] for c in retrieved]
+    chunks = retrieval_service.retrieve(query, titles=titles)
 
-    # Model call
-    answer = chat_with_model(query, chunks)
+    # Model call based on mode
+    if mode == "answer":
+        result = chat_service.answer_question(query, chunks)
+    elif mode == "summarize":
+        result = chat_service.summarize(chunks)
+    elif mode == "outline":
+        result = chat_service.outline(chunks)
+    else:
+        result = "Unknown mode."
 
     return jsonify({
-        "answer": answer,
+        "answer": result,
         "context": chunks
     })
+

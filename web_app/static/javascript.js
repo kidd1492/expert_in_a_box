@@ -142,46 +142,47 @@ function uploadFile() {
 }
 
 
-function queryChatbot() {
-    const query = document.getElementById("query-input").value.trim();
-    if (!query) {
-        alert("Please enter a query.");
-        return;
-    }
+function chatAsk() {
+    runChatMode("answer");
+}
 
+function chatSummarize() {
+    runChatMode("summarize");
+}
+
+function chatOutline() {
+    runChatMode("outline");
+}
+
+
+function runChatMode(mode) {
+    const query = document.getElementById("query-input").value.trim();
     const docs = getSelectedDocuments();
     const titles = docs.length > 0 ? docs.join(",") : "all";
 
-    fetch(`/chat?query=${encodeURIComponent(query)}&titles=${encodeURIComponent(titles)}`)
-        .then(response => response.json())
+    fetch(`/chat?query=${encodeURIComponent(query)}&titles=${encodeURIComponent(titles)}&mode=${mode}`)
+        .then(res => res.json())
         .then(data => {
             const viewer = document.getElementById("doc-viewer");
             const title = document.getElementById("viewer-title");
 
-            title.innerText = "Chatbot Answer";
             viewer.innerHTML = "";
+            title.textContent = mode.toUpperCase();
 
-            // Display the chatbot answer
             let answerDiv = document.createElement("div");
-            answerDiv.classList.add("chunk-block");
-            answerDiv.innerHTML = `<h4>Answer</h4><p>${data.answer}</p>`;
+            answerDiv.className = "answer-block";
+            answerDiv.textContent = data.answer;
             viewer.appendChild(answerDiv);
 
-            // Optional: show retrieved context
-            if (data.context && data.context.length > 0) {
-                let ctxHeader = document.createElement("h4");
-                ctxHeader.innerText = "Retrieved Context";
-                viewer.appendChild(ctxHeader);
+            let ctxHeader = document.createElement("h4");
+            ctxHeader.textContent = "Retrieved Context:";
+            viewer.appendChild(ctxHeader);
 
-                data.context.forEach((chunk, index) => {
-                    let div = document.createElement("div");
-                    div.classList.add("chunk-block");
-                    div.innerHTML = `<h4>Chunk ${index + 1}</h4><p>${chunk}</p>`;
-                    viewer.appendChild(div);
-                });
-            }
-        })
-        .catch(err => {
-            console.error("Chat error:", err);
+            data.context.forEach(chunk => {
+                let div = document.createElement("div");
+                div.className = "chunk-block";
+                div.textContent = chunk;
+                viewer.appendChild(div);
+            });
         });
 }

@@ -58,7 +58,10 @@ A clean, three‑column interface designed for clarity and workflow efficiency.
 ### **Middle Column — Retrieval Panel**
 - Query input  
 - “Query Selected Documents” button  
-- Retrieves top‑k chunks from selected documents  
+- Retrieves top‑k chunks from selected documents 
+- “Ask chatbot” button 
+- “Summarize” button
+- “Outline” button
 
 ### **Right Column — Wikipedia Tools**
 - Input for Wikipedia search term  
@@ -92,14 +95,14 @@ Loads any supported file into the RAG system.
 expert_in_a_box/
 │
 ├── rag/
-│   ├── core/              # chunking, embeddings, vectors
-│   ├── services/          # ingestion, retrieval
-│   ├── agents/            # chat agent, tools
+│   ├── core/              # chat_agent, chunking, data_ingestion, embedding, tools, vectors
+│   ├── services/          # ingestion, retrieval, chat
 │   ├── utils/             # logging, db checks
 │   └── data/
 │       ├── wiki/          # auto-generated Wikipedia documents
 │       ├── uploads/       # user-uploaded files
 │       ├── rag_store.db   # SQLite vector store
+|       |__ logs           # tool,log, error.log, doc.log
 │
 ├── web_app/
 │   ├── templates/         # index.html, layout.html
@@ -107,29 +110,40 @@ expert_in_a_box/
 │   ├── routes.py          # Flask endpoints
 │   └── __init__.py        # create_app()
 │
-├── logs/                  # system logs
-│
 └── run.py                 # Launch Flask UI, ensure directories, start Ollama
 ```
 
 ---
 
 ## **Quick Start**
+- Install Ollama
+- https://humansideoftek.blogspot.com/2025/09/ollama-local-model-deployment-guide.html
 
+```bash
+git clone https://github.com/kidd1492/expert_in_a_box.git
+```
+
+```bash
+cd expert_in_a_box
+```
+
+```bash
+python -m venv venv
+```
 ```bash
 pip install -r requirements.txt
 python run.py
 ```
 
+
 The app will:
 
 - Ensure required directories exist  
 - Initialize the SQLite vector store  
-- Optionally start the local Ollama server   
+- Start the local Ollama server  
 ---
 
-## **Roadmap**
-- [ ] Add chatbot functionality using retrieved chunks as context    
+## **Roadmap**    
 - [ ] Auto‑refresh document list after ingestion  
 - [ ] UI polish (loading indicators, success messages)    
 - [ ] Streaming responses  
@@ -137,14 +151,18 @@ The app will:
 ---
 
 ## **Why This Project Exists**
-Expert‑in‑a‑Box is built for developers who want:
+If you're anything like me, you have notes scattered across apps, folders, and formats — ideas, research, tasks, references, half‑finished thoughts. Finding what you need, when you need it, can be frustrating. I wanted a simple, fast way to organize all of it and instantly surface the relevant pieces for whatever I’m working on.
 
-- Full control over retrieval  
-- Transparent chunk‑level inspection  
-- Local, offline‑first operation  
-- A modular architecture that’s easy to extend  
-- A clean UI for interacting with RAG workflows  
+- Expert‑in‑a‑Box was built to solve that problem.
 
-It’s a foundation for building personal research assistants, knowledge bases, or agentic systems — **without relying on cloud services or opaque pipelines**.
+- It provides:
+
+- A unified place to store and structure notes
+- Fast retrieval of the exact information needed for a task
+- A growing personal knowledge base you can build on over time
+- Local LLM‑powered insight without sending data to the cloud
+- Full transparency and control over how retrieval and reasoning work
+
+This project is for anyone who wants their notes to become a living, searchable knowledge system — and who values privacy, clarity, and local control. It’s a foundation for personal research assistants, knowledge bases, and agentic workflows that you can trust and extend.
 
 This project is licensed under the MIT License — see the LICENSE file for details.
