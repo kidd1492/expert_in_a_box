@@ -88,27 +88,49 @@ def retrieve():
     return jsonify(results)
 
 
+import json
+
 @main_bp.route("/chat")
 def chat():
     query = request.args.get("query", "")
     titles = request.args.get("titles", "all")
-    mode = request.args.get("mode", "answer")  # NEW
+    mode = request.args.get("mode", "answer")
 
-    # Retrieve context
-    chunks = retrieval_service.retrieve(query, titles=titles)
-    raw_results = retrieval_service.retrieve(query=query, titles=titles, top_k=3)
-    # Model call based on mode
+    raw_chunks = retrieval_service.retrieve(query, titles=titles)
+
+    def normalize(meta):
+        if isinstance(meta, dict):
+            return meta
+        try:
+            loaded = json.loads(meta)
+            if isinstance(loaded, dict):
+                return loaded
+            return {"title": str(loaded)}
+        except Exception:
+            return {"title": str(meta)}
+
+    # Convert raw chunks into structured objects
+    context = []
+    for content, metadata in raw_chunks:
+        meta = normalize(metadata)
+        context.append({
+            "title": meta.get("title", "Unknown Document"),
+            "page_number": meta.get("page_number"),
+            "text": content,
+            "metadata": meta
+        })
+
+    # Model call
     if mode == "answer":
-        result = chat_service.answer_question(query, chunks)
+        result = chat_service.answer_question(query, context)
     elif mode == "summarize":
-        result = chat_service.summarize(chunks)
+        result = chat_service.summarize(context)
     elif mode == "outline":
-        result = chat_service.outline(chunks)
+        result = chat_service.outline(context)
     else:
         result = "Unknown mode."
 
     return jsonify({
         "answer": result,
-        "context": chunks
+        "context": context
     })
-

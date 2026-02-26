@@ -33,8 +33,14 @@ function runWikiSearch() {
         .then(response => response.json())
         .then(data => {
             const resultsDiv = document.getElementById("wiki-results");
-            resultsDiv.innerHTML = `<p>${data.status}</p>`;
+
+            let formatted = data.status
+                .replace(/==\s*(.*?)\s*==/g, "<h3>$1</h3>")
+                .replace(/===\s*(.*?)\s*===/g, "<h4>$1</h4>");
+
+            resultsDiv.innerHTML = formatted;
         })
+
         .catch(err => {
             console.error("Wiki search error:", err);
             document.getElementById("wiki-results").innerHTML = "<p>Error performing wiki search.</p>";
@@ -185,7 +191,10 @@ function runChatMode(mode) {
             data.context.forEach(chunk => {
                 let div = document.createElement("div");
                 div.className = "chunk-block";
-                div.textContent = chunk;
+                div.innerHTML = `
+                    <strong>${chunk.title} — Page ${chunk.page_number}</strong><br>
+                    ${chunk.text}
+                `;
                 viewer.appendChild(div);
             });
         });

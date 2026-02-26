@@ -6,8 +6,9 @@ class ChatService:
     def __init__(self):
         self.model = model
 
-    def answer_question(self, question: str, chunks: list[tuple]):
-        context = "\n\n".join(chunk[0] for chunk in chunks)
+    def answer_question(self, question: str, chunks: list[dict]):
+        # chunks is now a list of dicts: {title, page_number, text, metadata}
+        context = "\n\n".join(chunk["text"] for chunk in chunks)
 
         system_prompt = (
             "You are Expert-in-a-Box, a retrieval-augmented assistant. "
@@ -21,9 +22,8 @@ class ChatService:
         ]
         return self.model.invoke(messages).content
 
-
-    def summarize(self, chunks: list[tuple]):
-        context = "\n\n".join(chunk[0] for chunk in chunks)
+    def summarize(self, chunks: list[dict]):
+        context = "\n\n".join(chunk["text"] for chunk in chunks)
 
         messages = [
             SystemMessage(content="Summarize the following retrieved context clearly and concisely."),
@@ -31,13 +31,11 @@ class ChatService:
         ]
         return self.model.invoke(messages).content
 
-
-    def outline(self, chunks: list[tuple]):
-        context = "\n\n".join(chunk[0] for chunk in chunks)
+    def outline(self, chunks: list[dict]):
+        context = "\n\n".join(chunk["text"] for chunk in chunks)
 
         messages = [
             SystemMessage(content="Create a structured outline of the following context."),
             HumanMessage(content=context)
         ]
         return self.model.invoke(messages).content
-
