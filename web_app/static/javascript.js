@@ -102,7 +102,11 @@ function runQuery() {
             data.forEach((chunk, index) => {
                 let div = document.createElement("div");
                 div.classList.add("chunk-block");
-                div.innerHTML = `<h4>Chunk ${index + 1}</h4><p>${chunk[0]}</p>`;
+                div.innerHTML = `
+                    <h4>${chunk.title} — Page ${chunk.page_number}</h4>
+                    <p>${chunk.text}</p>
+                `;
+
                 viewer.appendChild(div);
             });
         })

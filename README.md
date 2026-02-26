@@ -119,6 +119,11 @@ expert_in_a_box/
 - Install Ollama
 - https://humansideoftek.blogspot.com/2025/09/ollama-local-model-deployment-guide.html
 
+Pull embedding model: 
+```bash
+ollama pull mxbai-embed-large:335m
+```
+
 ```bash
 git clone https://github.com/kidd1492/expert_in_a_box.git
 ```

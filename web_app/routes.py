@@ -2,6 +2,7 @@
 from flask import Blueprint, request, jsonify, render_template
 from .models import ingestion_service, retrieval_service, chat_service
 from rag.core import tool_file
+import json
 
 main_bp = Blueprint('main', __name__)
 
@@ -60,7 +61,30 @@ def retrieve():
     query = request.args.get("query", "")
     titles = request.args.get("titles", "all")
 
-    results = retrieval_service.retrieve(query=query, titles=titles, top_k=3)
+    raw_results = retrieval_service.retrieve(query=query, titles=titles, top_k=3)
+
+    def normalize(meta):
+        # meta may be a dict, a JSON string, or a raw string
+        if isinstance(meta, dict):
+            return meta
+        try:
+            loaded = json.loads(meta)
+            if isinstance(loaded, dict):
+                return loaded
+            return {"title": str(loaded)}
+        except Exception:
+            return {"title": str(meta)}
+
+    results = []
+    for content, metadata in raw_results:
+        meta = normalize(metadata)
+        results.append({
+            "title": meta.get("title", "Unknown Document"),
+            "page_number": meta.get("page_number"),
+            "text": content,
+            "metadata": meta
+        })
+
     return jsonify(results)
 
 
@@ -72,7 +96,7 @@ def chat():
 
     # Retrieve context
     chunks = retrieval_service.retrieve(query, titles=titles)
-
+    raw_results = retrieval_service.retrieve(query=query, titles=titles, top_k=3)
     # Model call based on mode
     if mode == "answer":
         result = chat_service.answer_question(query, chunks)
