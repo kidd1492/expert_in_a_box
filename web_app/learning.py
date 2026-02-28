@@ -21,7 +21,7 @@ def youtube_search(query):
             "title": v["snippet"]["title"],
             "description": v["snippet"]["description"],
             "thumbnail": v["snippet"]["thumbnails"]["medium"]["url"],
-            #"videoId": v["id"]["videoId"]
+            "videoId": v["id"]["videoId"]
         })
 
     return jsonify(cleaned)

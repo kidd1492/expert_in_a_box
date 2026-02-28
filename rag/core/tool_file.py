@@ -35,7 +35,7 @@ def get_youtube_videos(query="machine learning transformer", max_results=10):
     url = (
         "https://www.googleapis.com/youtube/v3/search?"
         f"part=snippet&maxResults={max_results}&q={query}&type=video"
-        #f"&publishedAfter={published_after}&publishedBefore={published_before}"
+        f"&publishedAfter={published_after}&publishedBefore={published_before}"
         f"&key={youtube_api_key}"
     )
 
