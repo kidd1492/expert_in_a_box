@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block body %}
+    <!-- LEFT COLUMN -->
+    <div class="left-column">
+        <h2>Task List</h2>
+    </div>
+
+    <div class="middle-column">
+        <h2>YouTube Search</h2>
+
+        <input id="video-input" type="text" placeholder="Search YouTube…" class="wiki-input">
+        <button onclick="loadVideos()" class="wiki-btn">Search Videos</button>
+
+        <div id="video-results" class="video-results"></div>
+    </div>
+
+
+
+    <!-- RIGHT COLUMN -->
+    <div class="right-column">
+        <h2>Wiki Search</h2>
+    </div>
+
+{% endblock %} 

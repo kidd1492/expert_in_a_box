@@ -2,5 +2,5 @@ venv
 .env
 __pycache__
 data
-
+/news_files
 

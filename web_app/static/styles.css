@@ -120,3 +120,16 @@
     border-radius: 6px;
     overflow-y: auto;
 }
+
+
+.video-card {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 12px;
+    border-radius: 6px;
+}
+
+.video-card img.thumb {
+    width: 100%;
+    border-radius: 4px;
+}
