@@ -13,7 +13,7 @@
     <nav>
         <ul class="sidebar">
             <li><a href="/">Home</a></li>
-            <li><a href="/leaning", target="_blank">learning</a></li>
+            <li><a href="/auth/learning" target="_blank">learning</a></li>
         </ul>
     </nav>
 
@@ -21,9 +21,10 @@
         {% block body %}{% endblock %}
     </div>
 
-    <script src="static/javascript.js"></script>
-    <script src="static/learning.js"></script>
-    <script src="static/chat.js"></script>
+    <script src="{{ url_for('static', filename='javascript.js') }}"></script>
+    <script src="{{ url_for('static', filename='learning.js') }}"></script>
+    <script src="{{ url_for('static', filename='chat.js') }}"></script>
+
     
 </body>
 </html>
