@@ -44,7 +44,6 @@ def get_youtube_videos(query="machine learning transformer", max_results=10):
         videos = response.json().get("items", [])
 
         # Save to JSON
-        os.makedirs("rag/data/youtube_files", exist_ok=True)
         filepath = f"rag/data/youtube_files/youtube.json"
         with open(filepath, 'w', encoding='utf-8') as f:
             json.dump(videos, f, indent=2, ensure_ascii=False)

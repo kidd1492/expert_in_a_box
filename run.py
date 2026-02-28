@@ -33,6 +33,7 @@ def ensure_directories():
     os.makedirs("rag/data/wiki", exist_ok=True)
     os.makedirs("rag/data/uploads", exist_ok=True)
     os.makedirs("rag/data/logs", exist_ok=True)
+    os.makedirs("rag/data/youtube_files", exist_ok=True)
 
 
 
