@@ -19,3 +19,13 @@ def chunk_to_dict(content, meta):
         "text": content,
         "metadata": meta
     }
+
+
+def build_context(raw_chunks):
+    context = []
+    for content, metadata in raw_chunks:
+        meta = normalize_metadata(metadata)
+        context.append(chunk_to_dict(content, meta))
+    return context
+
+

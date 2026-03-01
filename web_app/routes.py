@@ -1,8 +1,7 @@
-# webapp/routes.py
 from flask import Blueprint, request, jsonify, render_template
 from .models import ingestion_service, retrieval_service, chat_service
 from rag.core import tool_file
-from rag.utils.metadata import normalize_metadata, chunk_to_dict
+from rag.utils.metadata import build_context
 
 main_bp = Blueprint('main', __name__)
 
@@ -15,7 +14,6 @@ def index():
 
 @main_bp.route('/document/<title>')
 def view_document(title):
-    # Retrieve ALL chunks for this document
     results = retrieval_service.retrieve_doc(title=title)
     return jsonify({
         "title": title,
@@ -34,10 +32,11 @@ def add_wiki(term):
     content = tool_file.wiki_search(term)
     new_term = term.replace(" ", "_")
     filepath = f"rag/data/wiki/{new_term}.txt"
+
     with open(filepath, "w", encoding="utf-8") as f:
         f.write(content)
-    result = ingestion_service.add_file(filepath)
 
+    result = ingestion_service.add_file(filepath)
     return jsonify({"status": result})
 
 
@@ -60,11 +59,7 @@ def retrieve():
     titles = request.args.get("titles", "all")
 
     raw_results = retrieval_service.retrieve(query=query, titles=titles, top_k=3)
-
-    results = []
-    for content, metadata in raw_results:
-        meta = normalize_metadata(metadata)
-        results.append(chunk_to_dict(content, meta))
+    results = build_context(raw_results)
 
     return jsonify(results)
 
@@ -76,11 +71,7 @@ def chat():
     mode = request.args.get("mode", "answer")
 
     raw_chunks = retrieval_service.retrieve(query, titles=titles)
-
-    context = []
-    for content, metadata in raw_chunks:
-        meta = normalize_metadata(metadata)
-        context.append(chunk_to_dict(content, meta))
+    context = build_context(raw_chunks)
 
     if mode == "answer":
         result = chat_service.answer_question(query, context)
