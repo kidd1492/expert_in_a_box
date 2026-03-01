@@ -3,7 +3,7 @@ import json, os
 from rag.core.data_ingestion import read_document
 from rag.core.embedding import embed_documents
 from rag.core.vectors import VectorStore
-from rag.utils.log_handler import doc_logger, error_logger
+from rag.logging.log_handler import doc_logger, error_logger
 
 
 class IngestionService:

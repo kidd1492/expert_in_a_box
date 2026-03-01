@@ -10,4 +10,3 @@ vector_store = VectorStore()
 ingestion_service = IngestionService(vector_store)
 retrieval_service = RetrievalService(vector_store)
 chat_service = ChatService()
-

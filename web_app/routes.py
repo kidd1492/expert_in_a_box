@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify, render_template
-from .models import ingestion_service, retrieval_service, chat_service
-from rag.core import tool_file
+from rag.services.web_services import ingestion_service, retrieval_service, chat_service
+from rag.tools import tool_file
 from rag.utils.metadata import build_context
 
 main_bp = Blueprint('main', __name__)
@@ -19,7 +19,7 @@ def view_document(title):
         "title": title,
         "chunks": results
     })
-
+ 
 
 @main_bp.route('/wiki/<term>')
 def wiki_search(term):
