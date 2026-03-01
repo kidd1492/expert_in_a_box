@@ -2,15 +2,13 @@
 from flask import Blueprint, request, jsonify, render_template
 from .models import ingestion_service, retrieval_service, chat_service
 from rag.core import tool_file
-import json
+from rag.utils.metadata import normalize_metadata, chunk_to_dict
 
 main_bp = Blueprint('main', __name__)
 
 
 @main_bp.route('/')
 def index():
-    '''TODO see how the memory is going to be used??
-    history = memory_service.memory_store.conversation_history()'''
     docs = retrieval_service.list_docs()
     return render_template('index.html', documents=docs)
 
@@ -63,32 +61,13 @@ def retrieve():
 
     raw_results = retrieval_service.retrieve(query=query, titles=titles, top_k=3)
 
-    def normalize(meta):
-        # meta may be a dict, a JSON string, or a raw string
-        if isinstance(meta, dict):
-            return meta
-        try:
-            loaded = json.loads(meta)
-            if isinstance(loaded, dict):
-                return loaded
-            return {"title": str(loaded)}
-        except Exception:
-            return {"title": str(meta)}
-
     results = []
     for content, metadata in raw_results:
-        meta = normalize(metadata)
-        results.append({
-            "title": meta.get("title", "Unknown Document"),
-            "page_number": meta.get("page_number"),
-            "text": content,
-            "metadata": meta
-        })
+        meta = normalize_metadata(metadata)
+        results.append(chunk_to_dict(content, meta))
 
     return jsonify(results)
 
-
-import json
 
 @main_bp.route("/chat")
 def chat():
@@ -98,29 +77,11 @@ def chat():
 
     raw_chunks = retrieval_service.retrieve(query, titles=titles)
 
-    def normalize(meta):
-        if isinstance(meta, dict):
-            return meta
-        try:
-            loaded = json.loads(meta)
-            if isinstance(loaded, dict):
-                return loaded
-            return {"title": str(loaded)}
-        except Exception:
-            return {"title": str(meta)}
-
-    # Convert raw chunks into structured objects
     context = []
     for content, metadata in raw_chunks:
-        meta = normalize(metadata)
-        context.append({
-            "title": meta.get("title", "Unknown Document"),
-            "page_number": meta.get("page_number"),
-            "text": content,
-            "metadata": meta
-        })
+        meta = normalize_metadata(metadata)
+        context.append(chunk_to_dict(content, meta))
 
-    # Model call
     if mode == "answer":
         result = chat_service.answer_question(query, context)
     elif mode == "summarize":
@@ -134,4 +95,3 @@ def chat():
         "answer": result,
         "context": context
     })
-
