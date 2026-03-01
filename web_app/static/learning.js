@@ -5,7 +5,7 @@ function loadVideos() {
         return;
     }
 
-    fetch(`/learning/youtube/${term}`)
+    fetch(`/research/youtube/${term}`)
         .then(res => res.json())
         .then(videos => {
             const container = document.getElementById("video-results");

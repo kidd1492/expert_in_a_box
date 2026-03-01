@@ -3,14 +3,14 @@ from flask import Blueprint, request, jsonify, render_template
 from rag.tools import tool_file
 import json
 
-learning_bp = Blueprint('learning', __name__, url_prefix='/learning')
+research_bp = Blueprint('research', __name__, url_prefix='/research')
 
-@learning_bp.route("/home")
+@research_bp.route("/home")
 def home():
     return render_template('research_learning.html')
 
 
-@learning_bp.route("/youtube/<query>")
+@research_bp.route("/youtube/<query>")
 def youtube_search(query):
     videos = tool_file.get_youtube_videos(query=query, max_results=10)
 
