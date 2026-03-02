@@ -7,7 +7,7 @@ function uploadFile() {
     const formData = new FormData();
     formData.append("file", file);
 
-    fetch("/ingest", {
+    fetch("ingestion/ingest", {
         method: "POST",
         body: formData
     })
@@ -29,7 +29,7 @@ function addWikiSearch() {
         return;
     }
 
-    fetch(`/add_wiki/${term}`)
+    fetch(`ingestion/add_wiki/${term}`)
         .then(response => response.json())
         .then(data => {
             const resultsDiv = document.getElementById("wiki-results");

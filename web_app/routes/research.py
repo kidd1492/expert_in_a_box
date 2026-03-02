@@ -1,7 +1,7 @@
 # webapp/auth.py
 from flask import Blueprint, request, jsonify, render_template
 from rag.tools import tool_file
-import json
+
 
 research_bp = Blueprint('research', __name__, url_prefix='/research')
 

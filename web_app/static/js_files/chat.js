@@ -16,7 +16,7 @@ function runChatMode(mode) {
     const docs = getSelectedDocuments();
     const titles = docs.length > 0 ? docs.join(",") : "all";
 
-    fetch(`/chat?query=${encodeURIComponent(query)}&titles=${encodeURIComponent(titles)}&mode=${mode}`)
+    fetch(`chat_route/chat?query=${encodeURIComponent(query)}&titles=${encodeURIComponent(titles)}&mode=${mode}`)
         .then(res => res.json())
         .then(data => {
             const viewer = document.getElementById("doc-viewer");
