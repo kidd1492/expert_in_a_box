@@ -56,7 +56,7 @@ function runQuery() {
     const docs = getSelectedDocuments();
     const titles = docs.length > 0 ? docs.join(",") : "all";
 
-    fetch(`/retrieve?query=${encodeURIComponent(query)}&titles=${encodeURIComponent(titles)}`)
+    fetch(`retrieval/retrieve?query=${encodeURIComponent(query)}&titles=${encodeURIComponent(titles)}`)
         .then(response => response.json())
         .then(data => {
             const viewer = document.getElementById("doc-viewer");

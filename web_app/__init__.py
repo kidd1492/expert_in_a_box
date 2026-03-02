@@ -36,11 +36,13 @@ def create_app():
     from .routes.research import research_bp
     from .routes.chat_routes import chat_bp 
     from .routes.ingestion_routes import ingestion_bp
+    from .routes.retrieval_routes import retrieval_bp
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(main_bp)
     app.register_blueprint(research_bp)
     app.register_blueprint(chat_bp)
     app.register_blueprint(ingestion_bp)
+    app.register_blueprint(retrieval_bp)
 
     return app

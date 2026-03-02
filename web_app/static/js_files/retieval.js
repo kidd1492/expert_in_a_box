@@ -1,5 +1,5 @@
 function loadDocument(title) {
-    fetch(`/document/${title}`)
+    fetch(`retrieval/document/${title}`)
         .then(response => response.json())
         .then(data => {
             document.getElementById("viewer-title").innerText = data.title;
@@ -20,18 +20,3 @@ function loadDocument(title) {
             });
         });
 }
-
-
-function toggleSelectAll() {
-    const checked = document.getElementById("select-all").checked;
-    document.querySelectorAll(".doc-checkbox").forEach(cb => cb.checked = checked);
-}
-
-function getSelectedDocuments() {
-    const selected = [];
-    document.querySelectorAll(".doc-checkbox:checked").forEach(cb => {
-        selected.push(cb.value);
-    });
-    return selected;
-}
-
