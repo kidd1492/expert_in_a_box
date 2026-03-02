@@ -3,4 +3,4 @@ venv
 __pycache__
 data
 /news_files
-
+rag/logging/logs
