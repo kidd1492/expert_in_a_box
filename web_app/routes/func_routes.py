@@ -21,12 +21,6 @@ def view_document(title):
     })
  
 
-@main_bp.route('/wiki/<term>')
-def wiki_search(term):
-    result = tool_file.wiki_search(term)
-    return jsonify({"status": result})
-
-
 @main_bp.route('/add_wiki/<term>')
 def add_wiki(term):
     content = tool_file.wiki_search(term)

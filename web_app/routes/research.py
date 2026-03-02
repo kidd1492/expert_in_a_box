@@ -25,3 +25,8 @@ def youtube_search(query):
         })
 
     return jsonify(cleaned)
+
+@research_bp.route('/wiki/<term>')
+def wiki_search(term):
+    result = tool_file.wiki_search(term)
+    return jsonify({"status": result})
