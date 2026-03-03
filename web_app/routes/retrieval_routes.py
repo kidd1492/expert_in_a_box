@@ -19,3 +19,4 @@ def retrieve():
 
     results = retrieval_service.retrieve(query=query, titles=titles, top_k=3)
     return jsonify(results)
+
