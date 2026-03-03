@@ -12,15 +12,18 @@ def embed_text(text: str) -> np.ndarray:
     return np.array(embedding, dtype=np.float32)
 
 
-def embed_documents(chunks: list[Document]) -> list[tuple[str, dict, np.ndarray]]:
-    """
-    Returns a list of (content, metadata, embedding_array)
-    without touching the database.
-    """
+def embed_documents(chunks: list[Document]) -> list[dict]:
     results = []
     for chunk in chunks:
         content = chunk.page_content.strip()
         metadata = dict(chunk.metadata) if chunk.metadata else {}
         emb = embed_text(content)
-        results.append((content, metadata, emb))
+
+        results.append({
+            "content": content,
+            "metadata": metadata,
+            "embedding": emb
+        })
+
     return results
+
