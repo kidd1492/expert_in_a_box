@@ -1,5 +1,4 @@
 # services/chat_service.py
-from rag.utils.metadata import build_context
 from langchain_ollama import ChatOllama
 
 

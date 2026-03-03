@@ -39,7 +39,7 @@ function runChatMode(mode) {
                 div.className = "chunk-block";
                 div.innerHTML = `
                     <strong>${chunk.title} — Page ${chunk.page_number}</strong><br>
-                    ${chunk.text}
+                    ${chunk.content}
                 `;
                 viewer.appendChild(div);
             });
@@ -75,7 +75,7 @@ function runQuery() {
                 div.classList.add("chunk-block");
                 div.innerHTML = `
                     <h4>${chunk.title} — Page ${chunk.page_number}</h4>
-                    <p>${chunk.text}</p>
+                    <p>${chunk.content}</p>
                 `;
 
                 viewer.appendChild(div);
