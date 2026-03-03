@@ -1,6 +1,5 @@
 from flask import Blueprint, request, jsonify
 from rag.services.web_services import retrieval_service, chat_service
-from rag.utils.metadata import build_context
 
 chat_bp = Blueprint('chat_route', __name__, url_prefix='/chat_route')
 
@@ -11,9 +10,8 @@ def chat():
     titles = request.args.get("titles", "all")
     mode = request.args.get("mode", "answer")
 
-    raw_chunks = retrieval_service.retrieve(query, titles=titles)
-    context = build_context(raw_chunks)
-
+    context = retrieval_service.retrieve(query, titles=titles)
+  
     if mode == "answer":
         result = chat_service.answer_question(query, context)
     elif mode == "summarize":

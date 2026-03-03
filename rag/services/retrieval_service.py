@@ -1,8 +1,6 @@
 # services/retrieval_service.py
 from rag.core.vectors import VectorStore
 from rag.core.embedding import embed_text
-from rag.utils.metadata import build_context
-
 
 class RetrievalService:
     def __init__(self, vector_store: VectorStore | None = None):
@@ -21,10 +19,7 @@ class RetrievalService:
             titles=titles
         )
 
-        # Convert retrieval records into unified chunk dicts
-        context_chunks = build_context(results)
-
-        return context_chunks
+        return results
 
     def retrieve_doc(self, title: str):
         return self.vector_store.retrieve_document(title)
