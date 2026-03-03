@@ -1,6 +1,7 @@
 # services/retrieval_service.py
 from rag.core.vectors import VectorStore
 from rag.core.embedding import embed_text
+from rag.utils.metadata import build_context
 
 
 class RetrievalService:
@@ -8,14 +9,25 @@ class RetrievalService:
         self.vector_store = vector_store or VectorStore()
 
     def retrieve(self, query: str, search_type: str = "similarity", top_k: int = 3, titles: str = "all"):
+        # Embed the query text
         query_embedding = embed_text(query)
-        results = self.vector_store.query_documents(query_embedding, search_type=search_type, top_k=top_k, titles=titles)
-        return results
+
+        # VectorStore now returns a list of dicts:
+        # { "id", "content", "metadata", "score" }
+        results = self.vector_store.query_documents(
+            query_embedding=query_embedding,
+            search_type=search_type,
+            top_k=top_k,
+            titles=titles
+        )
+
+        # Convert retrieval records into unified chunk dicts
+        context_chunks = build_context(results)
+
+        return context_chunks
 
     def retrieve_doc(self, title: str):
-        results = self.vector_store.retrieve_document(title=title)
-        return results
-    
+        return self.vector_store.retrieve_document(title)
+
     def list_docs(self):
-        results = self.vector_store.list_docs()
-        return results
+        return self.vector_store.list_docs()

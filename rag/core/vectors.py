@@ -1,9 +1,10 @@
 import sqlite3
 import json
 import numpy as np
-from typing import List, Tuple, Dict, Any
+from typing import List, Dict, Any
 
 
+# DB Connection Helper
 def connect_db(db_path="rag/data/rag_store.db"):
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
@@ -76,22 +77,23 @@ class VectorStore:
         search_type: str = "similarity",
         top_k: int = 3,
         titles: str = "all"
-    ) -> List[Tuple[str, Dict[str, Any]]]:
+    ) -> List[Dict[str, Any]]:
         """
-        Returns a list of (content, metadata_dict) tuples.
-        Supports:
-            - cosine similarity
-            - dot product
-        Optional:
-            - Filter by document title(s)
+        Returns a list of dicts:
+        {
+            "id": int,
+            "content": str,
+            "metadata": dict,
+            "score": float
+        }
         """
+
         conn, cursor = connect_db(self.db_path)
 
-        # Handle document filtering
+        # Optional filtering by title
         if titles == "all":
             cursor.execute("SELECT id, content, metadata, embedding FROM documents")
         else:
-            # titles is a comma-separated string
             title_list = [t.strip() for t in titles.split(",") if t.strip()]
             placeholders = ",".join("?" * len(title_list))
             cursor.execute(
@@ -117,35 +119,39 @@ class VectorStore:
             # Normalize stored embedding
             emb_norm = emb / (np.linalg.norm(emb) + 1e-8)
 
+            # Compute similarity score
             if search_type == "dot":
                 score = float(np.dot(q, emb))
             else:
                 score = float(np.dot(q_norm, emb_norm))
 
             metadata = json.loads(metadata_json) if metadata_json else {}
-            scored.append((score, content, metadata))
+
+            scored.append({
+                "id": doc_id,
+                "content": content,
+                "metadata": metadata,
+                "score": score
+            })
 
         # Sort by score descending
-        scored.sort(key=lambda x: x[0], reverse=True)
+        scored.sort(key=lambda x: x["score"], reverse=True)
 
-        # Return top_k
-        return [(content, metadata) for score, content, metadata in scored[:top_k]]
-
+        # Return top_k dicts
+        return scored[:top_k]
 
 
     def list_docs(self):
         conn, cursor = connect_db(self.db_path)
-        cursor.execute("SELECT DISTINCT title FROM documents") 
+        cursor.execute("SELECT DISTINCT title FROM documents")
         docs = [row[0] for row in cursor.fetchall()]
         conn.close()
-        for doc in docs: print(doc)
         return docs
-        
 
-    # returns all chunck of document to display full document in webapp
+
     def retrieve_document(self, title: str):
         conn, cursor = connect_db(self.db_path)
-        cursor.execute(f"SELECT content FROM documents WHERE title == '{title}'")
+        cursor.execute("SELECT content FROM documents WHERE title == ?", (title,))
         document = cursor.fetchall()
         conn.close()
         return document

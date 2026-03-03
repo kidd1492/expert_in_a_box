@@ -12,20 +12,32 @@ def normalize_metadata(meta):
         return {"title": str(meta)}
 
 
-def chunk_to_dict(content, meta):
+def chunk_to_dict(record):
+    """
+    Convert a retrieval record into a unified chunk dict.
+    Expected record shape:
+    {
+        "id": int | None,
+        "content": str,
+        "metadata": dict,
+        "score": float | None
+    }
+    """
+    content = record.get("content", "")
+    meta = normalize_metadata(record.get("metadata", {}))
+
     return {
+        "id": record.get("id"),
+        "content": content,
         "title": meta.get("title", "Unknown Document"),
         "page_number": meta.get("page_number"),
-        "text": content,
+        "score": record.get("score"),
         "metadata": meta
     }
 
 
-def build_context(raw_chunks):
-    context = []
-    for content, metadata in raw_chunks:
-        meta = normalize_metadata(metadata)
-        context.append(chunk_to_dict(content, meta))
-    return context
-
-
+def build_context(records):
+    """
+    Convert a list of retrieval records into a list of unified chunk dicts.
+    """
+    return [chunk_to_dict(record) for record in records]
