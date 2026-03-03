@@ -4,6 +4,12 @@ import numpy as np
 from typing import List, Tuple, Dict, Any
 
 
+def connect_db(db_path="rag/data/rag_store.db"):
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+    return conn, cursor
+
+
 class VectorStore:
     """
     SQLite‑backed vector store with JSON metadata.
@@ -20,8 +26,7 @@ class VectorStore:
 
 
     def _init_schema(self):
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
+        conn, cursor = connect_db(self.db_path)
 
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS documents (
@@ -51,8 +56,7 @@ class VectorStore:
         metadata_json = json.dumps(metadata, ensure_ascii=False)
         embedding_bytes = embedding.astype(np.float32).tobytes()
 
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
+        conn, cursor = connect_db(self.db_path)
 
         cursor.execute("""
             INSERT INTO documents (content, title, metadata, embedding)
@@ -81,9 +85,7 @@ class VectorStore:
         Optional:
             - Filter by document title(s)
         """
-
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
+        conn, cursor = connect_db(self.db_path)
 
         # Handle document filtering
         if titles == "all":
@@ -132,8 +134,7 @@ class VectorStore:
 
 
     def list_docs(self):
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
+        conn, cursor = connect_db(self.db_path)
         cursor.execute("SELECT DISTINCT title FROM documents") 
         docs = [row[0] for row in cursor.fetchall()]
         conn.close()
@@ -143,8 +144,7 @@ class VectorStore:
 
     # returns all chunck of document to display full document in webapp
     def retrieve_document(self, title: str):
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
+        conn, cursor = connect_db(self.db_path)
         cursor.execute(f"SELECT content FROM documents WHERE title == '{title}'")
         document = cursor.fetchall()
         conn.close()
