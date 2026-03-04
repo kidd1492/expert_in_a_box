@@ -1,3 +1,7 @@
+body {
+    background-color: rgb(192, 191, 191);
+}
+
 /* Layout grid */
 .grid-container {
     display: grid;
@@ -11,9 +15,10 @@
 .left-column,
 .middle-column,
 .right-column {
-    background: #f8f8f8;
+    background: rgb(243, 240, 240);
     padding: 15px;
-    border-radius: 8px;
+    border: 2px, solid black;
+    border-radius: 5px;
     overflow-y: auto;
 }
 
@@ -52,18 +57,18 @@
 
 /* Button */
 .ask-btn {
+    background-color: rgb(198, 201, 200);
     margin-top: 15px;
     width: 100%;
     padding: 10px;
-    background: #0078ff;
-    color: white;
-    border: none;
+    border: 2px solid, grey;
     border-radius: 6px;
     cursor: pointer;
 }
 
 .ask-btn:hover {
     background: #005fcc;
+    color: white;
 }
 
 /* Sidebar */
@@ -108,8 +113,14 @@
 }
 
 .wiki-btn {
+    background-color: rgb(198, 201, 200);
     padding: 8px 12px;
     margin-bottom: 15px;
+}
+
+.wiki-btn:hover {
+    background-color: #0078ff;
+    color: white;
 }
 
 .wiki-results {
