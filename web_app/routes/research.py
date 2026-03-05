@@ -1,13 +1,27 @@
 # webapp/auth.py
 from flask import Blueprint, request, jsonify, render_template
 from rag.tools import tool_file
-
+import os
 
 research_bp = Blueprint('research', __name__, url_prefix='/research')
 
+
 @research_bp.route("/home")
 def home():
-    return render_template('research_learning.html')
+    if not os.path.exists("rag/data/youtube_files/youtube.json"):
+        return render_template("research_learning.html", videos=[])
+
+    load_last = tool_file.load_youtube_data("rag/data/youtube_files/youtube.json")
+    cleaned = []
+    for v in load_last:
+        cleaned.append({
+            "title": v["snippet"]["title"],
+            "description": v["snippet"]["description"],
+            "thumbnail": v["snippet"]["thumbnails"]["medium"]["url"],
+            "videoId": v["id"]["videoId"]
+        })
+
+    return render_template('research_learning.html', videos=cleaned)
 
 
 @research_bp.route("/youtube/<query>")

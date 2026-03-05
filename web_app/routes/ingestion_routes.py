@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from rag.services.web_services import ingestion_service
 from rag.tools import tool_file
-
+from utils.helper_functions import write_file
 
 ingestion_bp = Blueprint('ingestion', __name__, url_prefix='/ingestion')
 
@@ -10,10 +10,7 @@ def add_wiki(term):
     content = tool_file.wiki_search(term)
     new_term = term.replace(" ", "_")
     filepath = f"rag/data/wiki/{new_term}.txt"
-
-    with open(filepath, "w", encoding="utf-8") as f:
-        f.write(content)
-
+    write_file(filepath, content)
     result = ingestion_service.add_file(filepath)
     return jsonify({"status": result})
 

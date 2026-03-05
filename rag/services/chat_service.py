@@ -3,7 +3,7 @@ from langchain_ollama import ChatOllama
 
 
 def get_model():
-    return ChatOllama(model="qwen2.5:3b")
+    return ChatOllama(model="llama3.2:3b")
 
 
 class ChatService:

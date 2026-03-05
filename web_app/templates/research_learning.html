@@ -10,12 +10,27 @@
 
     <div class="middle-column">
         <h2>YouTube Search</h2>
-
         <input id="video-input" type="text" placeholder="Search YouTube…" class="wiki-input">
         <button onclick="loadVideos()" class="wiki-btn">Search Videos</button>
-
-        <div id="video-results" class="video-results"></div>
+        {% if videos and videos|length > 0 %}
+            <h3>Last Search Results</h3>
+            <div id="video-results" class="video-results">
+                {% for v in videos %}
+                    <div class="video-card">
+                        <img src="{{ v.thumbnail }}" class="thumb"/>
+                        <h4>{{ v.title }}</h4>
+                        <p>{{ v.description }}</p>
+                        <a href="https://www.youtube.com/watch?v={{ v.videoId }}" target="_blank">
+                            Watch on YouTube
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div id="video-results" class="video-results"></div>
+        {% endif %}
     </div>
+
 
 
 

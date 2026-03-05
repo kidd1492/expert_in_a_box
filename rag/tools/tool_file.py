@@ -1,10 +1,9 @@
 # agents/tool_file.py
 import wikipedia as wk
-import json
+import json, os, requests
 from dotenv import load_dotenv
-import os
-import requests
 from datetime import datetime, timedelta
+from utils.helper_functions import save_json
 
 
 def wiki_search(term):
@@ -42,13 +41,8 @@ def get_youtube_videos(query="machine learning transformer", max_results=10):
     response = requests.get(url)
     if response.status_code == 200:
         videos = response.json().get("items", [])
-
-        # Save to JSON
-        filepath = f"rag/data/youtube_files/youtube.json"
-        with open(filepath, 'w', encoding='utf-8') as f:
-            json.dump(videos, f, indent=2, ensure_ascii=False)
-
-        print(f"Saved {len(videos)} videos")
+        file_path = f"rag/data/youtube_files/youtube.json"
+        save_json(file_path, videos)
         return videos
     else:
         print("Failed to fetch videos.")
@@ -56,7 +50,7 @@ def get_youtube_videos(query="machine learning transformer", max_results=10):
         return []
 
 
-def load_youtube_data(filepath):
-    with open(filepath, 'r', encoding='utf-8') as file:
+def load_youtube_data(file_path):
+    with open(file_path, 'r', encoding='utf-8') as file:
         return json.load(file)
 
