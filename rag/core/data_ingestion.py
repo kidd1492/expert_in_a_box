@@ -1,63 +1,35 @@
 # core/data_ingestion.py
 import os, re, fitz
-from rag.core.chunking import chunk_text
+from utils.helper_functions import read_file
 from rag.logging.log_handler import error_logger
+from langchain_core.documents import Document
 
+def read_document(file_path: str) -> str:
+    if not os.path.exists(file_path):
+        error_logger.error(f"File not found: {file_path}")
 
-def read_document(filepath: str):
-    if not os.path.exists(filepath):
-        error_logger.error(f"File not found: {filepath}")
-        return {
-            "ok": False,
-            "chunks": None,
-            "ext": None,
-            "error": f"File not found: {filepath}"
-        }
-
-    ext = filepath.split(".")[-1].lower()
+    ext = file_path.split(".")[-1].lower()
 
     # --- PDF ---
     if ext == "pdf":
-        text = load_pdf(filepath)
-        chunks = chunk_text(text, source_name=filepath)
+        text = load_pdf(file_path)
 
-    # --- TXT ---
-    elif ext == "txt":
-        with open(filepath, 'r', encoding='UTF-8') as file:
-            text = file.read()
-        chunks = chunk_text(text, source_name=filepath)
-
-    # --- MARKDOWN (normalize to your chunker) ---
-    elif ext == "md":
-        with open(filepath, 'r', encoding='UTF-8') as file:
-            markdown_text = file.read()
-        chunks = chunk_text(markdown_text, source_name=filepath)
-
-    # --- Unsupported ---
+    elif ext in ["txt", "md"]:
+        text = read_file(file_path)
     else:
-        error_logger.error(f"Unsupported file type: {filepath}")
-        return {
-            "ok": False,
-            "chunks": None,
-            "ext": None,
-            "error": f"Unsupported file type: {ext}"
-        }
+        error_logger.error(f"Unsupported file type: {file_path}")
+        return f""
 
-    return {
-        "ok": True,
-        "chunks": chunks,
-        "ext": ext.upper(),
-        "error": None
-    }
+    return text
 
 
-def load_pdf(filepath: str) -> str:
+def load_pdf(file_path: str) -> str:
     """Load and clean text from a single PDF file."""
     try:
-        doc = fitz.open(filepath)
+        doc = fitz.open(file_path)
         text = "\n".join([page.get_text() for page in doc])
     except Exception as e:
-        error_logger.error(f"Error reading PDF {filepath}: {e}")
+        error_logger.error(f"Error reading PDF {file_path}: {e}")
         raise RuntimeError(f"Failed to load PDF: {e}")
 
     text = re.sub(r"[ \t]+", " ", text)
