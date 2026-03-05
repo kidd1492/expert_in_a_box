@@ -1,6 +1,7 @@
 # webapp/auth.py
-from flask import Blueprint, request, jsonify, render_template
+from flask import Blueprint, jsonify, render_template
 from rag.tools import tool_file
+from utils.helper_functions import parse_youtube_data
 import os
 
 research_bp = Blueprint('research', __name__, url_prefix='/research')
@@ -12,33 +13,17 @@ def home():
         return render_template("research_learning.html", videos=[])
 
     load_last = tool_file.load_youtube_data("rag/data/youtube_files/youtube.json")
-    cleaned = []
-    for v in load_last:
-        cleaned.append({
-            "title": v["snippet"]["title"],
-            "description": v["snippet"]["description"],
-            "thumbnail": v["snippet"]["thumbnails"]["medium"]["url"],
-            "videoId": v["id"]["videoId"]
-        })
-
+    cleaned = parse_youtube_data(load_last)
     return render_template('research_learning.html', videos=cleaned)
 
 
 @research_bp.route("/youtube/<query>")
 def youtube_search(query):
     videos = tool_file.get_youtube_videos(query=query, max_results=10)
-
+    cleaned = parse_youtube_data(videos)
     # Return only the fields the UI needs
-    cleaned = []
-    for v in videos:
-        cleaned.append({
-            "title": v["snippet"]["title"],
-            "description": v["snippet"]["description"],
-            "thumbnail": v["snippet"]["thumbnails"]["medium"]["url"],
-            "videoId": v["id"]["videoId"]
-        })
-
     return jsonify(cleaned)
+
 
 @research_bp.route('/wiki/<term>')
 def wiki_search(term):

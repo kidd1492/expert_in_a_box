@@ -2,7 +2,7 @@
 import wikipedia as wk
 import json, os, requests
 from dotenv import load_dotenv
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from utils.helper_functions import save_json
 
 
@@ -25,7 +25,7 @@ def get_youtube_videos(query="machine learning transformer", max_results=10):
     youtube_api_key = os.getenv("YOUTUBE_API_KEY")
 
     # Calculate yesterday and now in UTC
-    now = datetime.utcnow()
+    now = datetime.now()
     yesterday = now - timedelta(days=15)
 
     published_after = yesterday.isoformat("T") + "Z"
