@@ -2,7 +2,7 @@
 import os, re, fitz
 from utils.helper_functions import read_file
 from rag.logging.log_handler import error_logger
-from langchain_core.documents import Document
+
 
 def read_document(file_path: str) -> str:
     if not os.path.exists(file_path):

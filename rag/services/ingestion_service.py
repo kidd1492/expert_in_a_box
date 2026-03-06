@@ -11,10 +11,10 @@ class IngestionService:
         self.vector_store = vector_store or VectorStore()
 
     def add_file(self, file_path: str) -> str:
-        text = read_document(file_path)
-        chunks = chunk_text(text)
-        meta_chunks = get_metadata(chunks, file_path)
-        embedded = embed_documents(meta_chunks)
+        text = read_document(file_path) # -> str raw text
+        chunks = chunk_text(text) # -> List[Document]
+        meta_chunks = get_metadata(chunks, file_path) # -> List[dict]
+        embedded = embed_documents(meta_chunks) # -> list[dict]
 
         # --- Store each embedded chunk ---
         for record in embedded:

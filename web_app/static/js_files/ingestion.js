@@ -2,7 +2,18 @@ function uploadFile() {
     const fileInput = document.getElementById("file-input");
     const file = fileInput.files[0];
 
-    if (!file) return;
+    if (!file) {
+        alert("Please select a file.");
+        return;
+    }
+
+    const allowedExtensions = ["pdf", "txt", "md"];
+    const ext = file.name.split(".").pop().toLowerCase();
+
+    if (!allowedExtensions.includes(ext)) {
+        alert("Unsupported file type: " + ext);
+        return;
+    }
 
     const formData = new FormData();
     formData.append("file", file);
@@ -11,16 +22,24 @@ function uploadFile() {
         method: "POST",
         body: formData
     })
-    .then(response => response.json())
-    .then(data => {
+    .then(async response => {
+        const data = await response.json();
+
+        if (!response.ok) {
+            alert("Upload failed: " + (data.error || data.status));
+            return;
+        }
+
         alert("File uploaded and ingested successfully");
-        location.reload(); // refresh document list
+        location.reload();
     })
     .catch(err => {
         console.error(err);
         alert("Error uploading file");
     });
+
 }
+
 
 function addWikiSearch() {
     const term = document.getElementById("wiki-input").value.trim();
@@ -29,15 +48,21 @@ function addWikiSearch() {
         return;
     }
 
-    fetch(`ingestion/add_wiki/${term}`)
-        .then(response => response.json())
-        .then(data => {
-            const resultsDiv = document.getElementById("wiki-results");
-            resultsDiv.innerHTML = `<p>${data.status}</p>`;
+    fetch(`ingestion/add_wiki/${encodeURIComponent(term)}`)
+        .then(async response => {
+            const data = await response.json();
+
+            if (!response.ok) {
+                alert("Wiki ingestion failed: " + (data.error || data.status));
+                return;
+            }
+
+            alert("Wiki article ingested successfully");
+            document.getElementById("wiki-results").innerHTML = `<p>${data.status}</p>`;
         })
         .catch(err => {
             console.error("Add document error:", err);
-            document.getElementById("wiki-results").innerHTML = "<p>Error adding document.</p>";
+            alert("Network error while adding wiki document");
         });
 }
 
