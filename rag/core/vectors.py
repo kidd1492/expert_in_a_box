@@ -64,15 +64,7 @@ class VectorStore:
         top_k: int = 3,
         titles: str = "all"
     ) -> List[Dict[str, Any]]:
-        """
-        Returns a list of dicts:
-        {
-            "id": int,
-            "content": str,
-            "metadata": dict,
-            "score": float
-        }
-        """
+        
         conn, cursor = connect_db()
         if titles == "all":
             cursor.execute("SELECT id, content, metadata, embedding FROM documents")

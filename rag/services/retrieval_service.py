@@ -1,4 +1,3 @@
-# services/retrieval_service.py
 from rag.core.vectors import VectorStore
 from rag.core.embedding import embed_text
 
@@ -10,7 +9,6 @@ class RetrievalService:
         # Embed the query text
         query_embedding = embed_text(query)
 
-        # VectorStore now returns a list of dicts:
         # { "id", "content", "metadata", "score" }
         results = self.vector_store.query_documents(
             query_embedding=query_embedding,

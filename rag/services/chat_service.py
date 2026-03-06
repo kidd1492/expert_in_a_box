@@ -3,7 +3,7 @@ from langchain_ollama import ChatOllama
 
 
 def get_model():
-    return ChatOllama(model="llama3.2:3b")
+    return ChatOllama(model="qwen2.5:3b")
 
 
 class ChatService:
@@ -12,16 +12,6 @@ class ChatService:
 
 
     def _build_context(self, chunks):
-        """
-        chunks is now a list of dicts:
-        {
-            "id": int,
-            "content": str,
-            "metadata": dict,
-            "score": float,
-            ...
-        }
-        """
         return "\n\n".join(chunk["content"] for chunk in chunks)
 
 
