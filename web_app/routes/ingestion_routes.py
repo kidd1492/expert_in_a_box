@@ -26,3 +26,9 @@ def ingest():
 
     result = ingestion_service.add_file(filepath)
     return jsonify({"status": result})
+
+
+@ingestion_bp.route('/remove_selected/<titles>', methods=["DELETE"])
+def remove(titles):
+    ingestion_service.remove_file(titles)
+    return {"status": "ok"}

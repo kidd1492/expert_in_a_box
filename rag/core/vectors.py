@@ -1,8 +1,7 @@
-import sqlite3
-import json
+import sqlite3, json
 import numpy as np
 from typing import List, Dict, Any
-
+from utils.helper_functions import get_scored, get_titles
 
 # DB Connection Helper
 def connect_db(db_path="rag/data/rag_store.db"):
@@ -10,54 +9,6 @@ def connect_db(db_path="rag/data/rag_store.db"):
     cursor = conn.cursor()
     return conn, cursor
 
-
-def get_titles(titles):
-    conn, cursor = connect_db()
-
-    # Optional filtering by title
-    if titles == "all":
-        cursor.execute("SELECT id, content, metadata, embedding FROM documents")
-    else:
-        title_list = [t.strip() for t in titles.split(",") if t.strip()]
-        placeholders = ",".join("?" * len(title_list))
-        cursor.execute(
-            f"SELECT id, content, metadata, embedding FROM documents WHERE title IN ({placeholders})",
-            title_list
-        )
-
-    rows = cursor.fetchall()
-    conn.close()
-    return rows
-
-def get_scored(query_embedding, rows, search_type):
-    # Normalize query embedding
-    q = query_embedding.astype(np.float32)
-    q_norm = q / (np.linalg.norm(q) + 1e-8)
-
-    scored = []
-
-    for doc_id, content, metadata_json, emb_blob in rows:
-        emb = np.frombuffer(emb_blob, dtype=np.float32)
-
-        # Normalize stored embedding
-        emb_norm = emb / (np.linalg.norm(emb) + 1e-8)
-
-        # Compute similarity score
-        if search_type == "dot":
-            score = float(np.dot(q, emb))
-        else:
-            score = float(np.dot(q_norm, emb_norm))
-
-        metadata = json.loads(metadata_json) if metadata_json else {}
-
-        scored.append({
-            "id": doc_id,
-            "content": content,
-            "metadata": metadata,
-            "score": score
-        })
-    scored.sort(key=lambda x: x["score"], reverse=True)
-    return scored
 
 class VectorStore:
 
@@ -83,22 +34,17 @@ class VectorStore:
         conn.close()
 
 
-    def add_document(
-        self,
+    def add_document(self,
         content: str,
         title: str,
         metadata: Dict[str, Any],
         embedding: np.ndarray
     ) -> int:
-        """
-        Insert a document with JSON metadata + embedding.
-        Returns the inserted document ID.
-        """
+        """ Insert a document with JSON metadata + embedding. """
         metadata_json = json.dumps(metadata, ensure_ascii=False)
         embedding_bytes = embedding.astype(np.float32).tobytes()
 
         conn, cursor = connect_db(self.db_path)
-
         cursor.execute("""
             INSERT INTO documents (content, title, metadata, embedding)
             VALUES (?, ?, ?, ?)
@@ -127,7 +73,18 @@ class VectorStore:
             "score": float
         }
         """
-        rows = get_titles(titles)
+        conn, cursor = connect_db()
+        if titles == "all":
+            cursor.execute("SELECT id, content, metadata, embedding FROM documents")
+        else:
+            placeholders, title_list = get_titles(titles)
+            cursor.execute(
+                f"SELECT id, content, metadata, embedding FROM documents WHERE title IN ({placeholders})",
+                title_list
+            )
+        rows = cursor.fetchall()
+        conn.close()
+
         if not rows:
             return []
 
@@ -149,3 +106,16 @@ class VectorStore:
         document = cursor.fetchall()
         conn.close()
         return document
+    
+
+    def remove_file(self, titles):
+        conn, cursor = connect_db(self.db_path)
+
+        for title in titles:
+            cursor.execute("DELETE FROM documents WHERE title = ?", (title,))
+
+        conn.commit()
+        conn.close()
+        return
+
+

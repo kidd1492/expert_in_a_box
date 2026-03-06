@@ -34,3 +34,8 @@ class IngestionService:
         # --- Logging + return message ---
         doc_logger.info(f"'{file_path}' written to RAG database")
         return f"Finished loading {title} into store)"
+
+
+    def remove_file(self, titles):
+        titles = titles.split(",")
+        return self.vector_store.remove_file(titles)

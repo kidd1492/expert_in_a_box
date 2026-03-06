@@ -41,3 +41,19 @@ function addWikiSearch() {
         });
 }
 
+
+function removeFile() {
+    const docs = getSelectedDocuments();
+    const titles = docs.length > 0 ? docs.join(",") : "all";
+
+    fetch(`/ingestion/remove_selected/${encodeURIComponent(titles)}`, {
+        method: "DELETE"
+    })
+    .then(res => res.json())
+    .then(data => {
+        console.log("Removed:", data);
+    })
+    .catch(err => console.error("Error:", err));
+}
+
+    
