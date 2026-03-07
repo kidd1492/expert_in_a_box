@@ -46,7 +46,7 @@ def add_wiki(term):
 
     # Build file path
     new_term = term.replace(" ", "_")
-    file_path = f"rag/data/wiki/{new_term}.txt"
+    file_path = f"rag/data/uploads/{new_term}.txt"
 
     # Reject duplicates (same behavior as /ingest)
     if os.path.exists(file_path):

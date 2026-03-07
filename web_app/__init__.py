@@ -16,8 +16,7 @@ def start_ollama():
 
 
 def ensure_directories():
-    os.makedirs("rag/data", exist_ok=True)  # ensures DB directory exists
-    os.makedirs("rag/data/wiki", exist_ok=True)
+    os.makedirs("rag/data", exist_ok=True)  # ensures directories exists
     os.makedirs("rag/data/uploads", exist_ok=True)
     os.makedirs("rag/logging/logs", exist_ok=True)
     os.makedirs("rag/data/youtube_files", exist_ok=True)

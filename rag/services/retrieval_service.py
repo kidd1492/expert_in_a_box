@@ -5,7 +5,7 @@ class RetrievalService:
     def __init__(self, vector_store: VectorStore | None = None):
         self.vector_store = vector_store or VectorStore()
 
-    def retrieve(self, query: str, search_type: str = "similarity", top_k: int = 3, titles: str = "all"):
+    def retrieve(self, query: str, search_type: str = "similarity", top_k: int = 6, titles: str = "all"):
         # Embed the query text
         query_embedding = embed_text(query)
 

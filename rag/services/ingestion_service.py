@@ -4,6 +4,7 @@ from rag.core.embedding import embed_documents
 from rag.core.vectors import VectorStore
 from rag.logging.log_handler import doc_logger
 from rag.core.chunking import chunk_text, get_metadata
+from utils.helper_functions import delete_ingest_file
 
 
 class IngestionService:
@@ -38,4 +39,5 @@ class IngestionService:
 
     def remove_file(self, titles):
         titles = titles.split(",")
+        delete_ingest_file(titles)
         return self.vector_store.remove_file(titles)

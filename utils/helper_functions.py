@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 import numpy as np
 
 def read_file(file_path: str):
@@ -16,6 +17,7 @@ def save_json(file_path, content):
         json.dump(content, f, indent=2, ensure_ascii=False)
 
 
+
 def parse_youtube_data(videos):
     cleaned = []
     for v in videos:
@@ -26,6 +28,19 @@ def parse_youtube_data(videos):
             "videoId": v["id"]["videoId"]
         })
     return cleaned
+
+
+
+def delete_ingest_file(titles: list[str]) -> None:
+    for title in titles:
+        file_path = Path("rag/data/uploads") / title
+
+        if file_path.exists():
+            file_path.unlink()
+        else:
+            print(f"File not found: {file_path}")
+
+
 
 def get_titles(titles):
     title_list = [t.strip() for t in titles.split(",") if t.strip()]
