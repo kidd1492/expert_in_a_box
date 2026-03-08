@@ -1,8 +1,8 @@
 # **Expert‑in‑a‑Box**  
 *A transparent, offline‑first Retrieval‑Augmented Generation (RAG) system with modular pipelines, local embeddings, and a clean Flask UI.*
 
-`https://img.shields.io/badge/Python-3.10%2B-blue`
-`https://img.shields.io/badge/License-MIT-green`
+![Python Version](https://img.shields.io/badge/Python-3.10%2B-blue)
+![License: MIT](https://img.shields.io/badge/License-MIT-green)
 
 ---
 
