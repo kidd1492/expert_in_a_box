@@ -25,3 +25,8 @@ def chat():
         "answer": result,
         "context": context
     })
+
+
+@chat_bp.route("/chatbot")
+def chatbot():
+    query = request.args.get("query", "")

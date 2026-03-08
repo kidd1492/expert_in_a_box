@@ -79,24 +79,28 @@ All processing is **offline** and **local**.
 ```
 expert_in_a_box/
 ├── rag/
-  ├── agents/                 # ReAct_agent
-  ├── core/                   # Chunking, ingestion, embedding, vectors, memory
-  ├── services/               # Ingestion, retrieval, chat, memory, web services
-  └── data/
-    ├── uploads/              # User-uploaded files
-    ├── rag_store.db          # SQLite vector store
-  ├── logging                 # logs, log_handler
-  ├── tools                   # tools_file
-
+│   ├── agents/               # ReAct agent
+│   ├── core/                 # Chunking, ingestion, embedding, vectors, memory
+│   ├── services/             # Ingestion, retrieval, chat, memory, web services
+│   ├── tools/                # tool_file utilities
+│   ├── logging/              # log_handler + log files
+│   └── data/
+│       ├── uploads/          # User-uploaded files
+│       ├── wiki/             # Auto-generated wiki documents
+│       └── rag_store.db      # SQLite vector store
+│
 ├── utils/                    # Helper functions
+│
 ├── web_app/                  # Flask UI, routes, templates, static JS/CSS
-  ├── routes                  # auth, chat, func, ingestion, research, retrieval
-  ├── static                  # javascript, css
-    ├──js_files               # chat, func_helper, ingestion, research, retrieval.js
-  ├── templates               # index, layout, research
-  ├── __inti__                # starts ollama server, makes directory, registers apps
-├── run.py                    # entry point
-├── main.py                   # developer tools
+│   ├── routes/               # auth, chat, func, ingestion, research, retrieval
+│   ├── static/
+│   │   └── js_files/         # chat.js, ingestion.js, retrieval.js, etc.
+│   ├── templates/            # index.html, layout.html, research.html
+│   └── __init__.py           # Starts Ollama, ensures directories, registers blueprints
+│
+├── run.py                    # Application entry point
+└── main.py                   # Developer utilities
+
 
 ```
 

@@ -46,3 +46,11 @@ function runChatMode(mode) {
         });
 }
 
+function conversation() {
+    const answer = document.getElementById("ask-chatbot").value.trim();
+    const viewer = document.getElementById("chat-viewer");
+    let answerDiv = document.createElement("div");
+    answerDiv.className = "chunk-block";
+    answerDiv.textContent = answer;
+    viewer.appendChild(answerDiv);
+}
