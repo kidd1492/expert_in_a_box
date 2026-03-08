@@ -4,6 +4,7 @@ from typing import List, Dict, Any
 from utils.helper_functions import get_scored, get_titles
 
 # DB Connection Helper
+# TODO add to helper utils so memory can use it 
 def connect_db(db_path="rag/data/rag_store.db"):
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
