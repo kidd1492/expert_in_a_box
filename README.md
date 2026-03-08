@@ -1,173 +1,233 @@
 # **Expert‑in‑a‑Box**  
-*A transparent, offline‑first Retrieval‑Augmented Generation (RAG) system with a modular backend and a lightweight Flask UI.*
+*A transparent, offline‑first Retrieval‑Augmented Generation (RAG) system with modular pipelines, local embeddings, and a clean Flask UI.*
 
-![Python Version](https://img.shields.io/badge/Python-3.10%2B-blue)
-![License: MIT](https://img.shields.io/badge/License-MIT-green)
-
----
-
-## **Overview**
-**Expert‑in‑a‑Box** is a fully local, privacy‑preserving RAG. It combines a clean Python RAG engine with a three‑panel Flask web interface that allows users to:
-
-- Ingest documents  
-- Retrieve relevant chunks  
-- Run Wikipedia searches  
-- Prepare context for LLM‑based question answering  
-
-Every step of the ingestion and retrieval pipeline is exposed — no hidden agent behavior, no opaque chains. All data, embeddings, and logs are stored locally using SQLite and the filesystem.
+`https://img.shields.io/badge/Python-3.10%2B-blue`
+`https://img.shields.io/badge/License-MIT-green`
 
 ---
 
-## **Features**
+# Overview
 
-### **Retrieval‑Augmented Generation Engine**
-- Local SQLite‑backed vector store   
+**Expert‑in‑a‑Box** is a fully local, privacy‑preserving RAG system designed for clarity, transparency, and extensibility. It provides:
+
+- A complete **document ingestion pipeline**  
+- A fast **semantic retrieval engine**  
+- A structured **chat pipeline** with memory  
+- Built‑in **research tools** (Wikipedia + YouTube)  
+- A clean, three‑panel **Flask web interface**  
+
+Every step of the system is visible and inspectable — no hidden chains, no opaque agent behavior, no cloud calls. All embeddings, files, and conversation memory are stored locally using SQLite and the filesystem.
+
+This project is ideal for:
+
+- Personal knowledge bases  
+- Research workflows  
+- Local LLM experimentation  
+- Agentic system development  
+- Transparent RAG learning  
+
+---
+
+# Key Features
+
+## Retrieval‑Augmented Generation Engine
+- Local SQLite vector store  
 - Chunking via `RecursiveCharacterTextSplitter`  
-- Embeddings generated through local Ollama models  
-- Transparent metadata (title, page number, source file)  
-- Document‑level filtering for targeted retrieval  
+- Local embeddings using **Ollama**  
+- Transparent metadata (title, chunk index, source)  
+- Document‑level filtering  
 - Top‑k similarity search  
 
----
-
-### **Document Ingestion**
+## Document Ingestion Pipeline
 Supports:
-- `.txt`  
-- `.md`  
 - `.pdf`
+- `.txt`
+- `.md`
 
-Ingestion pipeline:
-1. Load file  
-2. Chunk text  
-3. Embed chunks  
-4. Store embeddings + metadata in SQLite  
+Pipeline steps:
+1. Read file  
+2. Extract text  
+3. Chunk text  
+4. Embed chunks  
+5. Store embeddings + metadata  
+6. Save original file  
 
-All ingestion happens locally — no cloud calls, no external dependencies.
+All processing is **offline** and **local**.
+
+## Chat Pipeline
+- Builds prompts from retrieved context  
+- Supports **Ask**, **Summarize**, and **Outline** modes  
+- Uses local Ollama LLMs  
+- Stores conversation memory per thread  
+- Optional ReAct‑style agent mode  
+
+## Memory System
+- SQLite‑backed memory store  
+- Thread‑based summaries  
+- Full message history  
+- Automatic loading/saving  
+
+## Research Tools
+- Wikipedia search + ingestion  
+- YouTube metadata search  
+- Auto‑generated wiki documents  
 
 ---
 
-## **Flask Web Application**
-A clean, three‑column interface designed for clarity and workflow efficiency.
+# Architecture
 
-### **Left Column — Document Management**
-- Displays all ingested documents  
-- Checkboxes for selecting documents  
-- “Select All” option  
-- Clicking a document shows all its chunks   
+```
+expert_in_a_box/
+├── rag/
+  ├── agents/                 # ReAct_agent
+  ├── core/                   # Chunking, ingestion, embedding, vectors, memory
+  ├── services/               # Ingestion, retrieval, chat, memory, web services
+  └── data/
+    ├── uploads/              # User-uploaded files
+    ├── rag_store.db          # SQLite vector store
+  ├── logging                 # logs, log_handler
+  ├── tools                   # tools_file
 
-### **Middle Column — Retrieval Panel**
+├── utils/                    # Helper functions
+├── web_app/                  # Flask UI, routes, templates, static JS/CSS
+  ├── routes                  # auth, chat, func, ingestion, research, retrieval
+  ├── static                  # javascript, css
+    ├──js_files               # chat, func_helper, ingestion, research, retrieval.js
+  ├── templates               # index, layout, research
+  ├── __inti__                # starts ollama server, makes directory, registers apps
+├── run.py                    # entry point
+├── main.py                   # developer tools
+
+```
+
+---
+
+# Pipeline Architecture
+
+## Ingestion Pipeline
+```
+read_document → chunk_text → embed_documents → add_document → save_file
+```
+
+## Retrieval Pipeline
+```
+embed_text(query) → query_documents → score + rank → return top_k
+```
+
+## Chat Pipeline
+```
+load_memory → retrieve_context → build_prompt → LLM.invoke → save_memory
+```
+
+These pipelines are modular, testable, and easy to extend.
+
+---
+
+# Flask Web Application
+
+A clean, three‑column interface:
+
+### **Left — Document Management**
+- List all ingested documents  
+- Select one or many  
+- View chunks  
+- Remove documents  
+
+### **Middle — Retrieval + Chat**
 - Query input  
-- “Query Selected Documents” button  
-- Retrieves top‑k chunks from selected documents 
-- “Ask chatbot” button 
-- “Summarize” button
-- “Outline” button
+- Retrieve top‑k chunks  
+- Ask chatbot  
+- Summarize  
+- Outline  
 
-### **Right Column — Wikipedia Tools**
-- Input for Wikipedia search term  
-- “Search Wikipedia” button (fetches content only)  
-- “Add Results” button:
-  - Fetches wiki content  
-  - Saves it to `rag/data/wiki/<term>.txt`  
-  - Ingests the saved file into the vector store
-- “Add Document” button:
-  - add selected document to the vector store
+### **Right — Research Tools**
+- Wikipedia search  
+- Add wiki content to vector store  
+- YouTube search  
 
 ---
 
-## **Tools**
+# 🛠️ Tools
 
-### **`wiki_search(term)`**
-Fetches Wikipedia content and returns it (no file saved).
+### `wiki_search(term)`
+Fetches Wikipedia content.
 
-### **`add_wiki(term)`**
-- Calls `wiki_search(term)`  
-- Saves content to `rag/data/wiki/<term>.txt`  
-- Passes the file to the ingestion service  
+### `add_wiki(term)`
+Fetches → saves → ingests wiki content.
 
-### **`add_file(filepath)`**
+### `add_file(filepath)`
 Loads any supported file into the RAG system.
 
 ---
 
-## **Architecture**
-```
-expert_in_a_box/
-│
-├── rag/
-│   ├── core/              # chat_agent, chunking, data_ingestion, embedding, tools, vectors
-│   ├── services/          # ingestion, retrieval, chat
-│   ├── utils/             # logging, db checks
-│   └── data/
-│       ├── wiki/          # auto-generated Wikipedia documents
-│       ├── uploads/       # user-uploaded files
-│       ├── rag_store.db   # SQLite vector store
-|       |__ logs           # tool,log, error.log, doc.log
-│
-├── web_app/
-│   ├── templates/         # index.html, layout.html
-│   ├── static/            # javascript.js, styles.css
-│   ├── routes.py          # Flask endpoints
-│   └── __init__.py        # create_app()
-│
-└── run.py                 # Launch Flask UI, ensure directories, start Ollama
-```
+# ⚙️ Installation & Quick Start
 
----
+### 1. Install Ollama  
+Guide: [https://humansideoftek.blogspot.com/2025/09/ollama-local-model-deployment-guide.html](https://humansideoftek.blogspot.com/2025/09/ollama-local-model-deployment-guide.html)
 
-## **Quick Start**
-- Install Ollama
-- https://humansideoftek.blogspot.com/2025/09/ollama-local-model-deployment-guide.html
-
-Pull embedding model: 
+### 2. Pull embedding model  
 ```bash
 ollama pull mxbai-embed-large:335m
 ```
 
+### 3. Clone the repo  
 ```bash
 git clone https://github.com/kidd1492/expert_in_a_box.git
-```
-
-```bash
 cd expert_in_a_box
 ```
 
+### 4. Create virtual environment  
 ```bash
 python -m venv venv
-```
-```bash
-pip install -r requirements.txt
-python run.py
+source venv/bin/activate  # or Windows equivalent
 ```
 
+### 5. Install dependencies  
+```bash
+pip install -r requirements.txt
+```
+
+### 6. Run the app  
+```bash
+python run.py
+```
 
 The app will:
 
 - Ensure required directories exist  
 - Initialize the SQLite vector store  
 - Start the local Ollama server  
+- Launch the Flask UI  
+
 ---
 
-## **Roadmap**    
+# Roadmap
+
 - [ ] Auto‑refresh document list after ingestion  
-- [ ] UI polish (loading indicators, success messages)    
-- [ ] Streaming responses  
+- [ ] UI polish (loading indicators, success messages)  
+- [ ] Streaming LLM responses  
+- [ ] Multi‑threaded memory  
+- [ ] Rerankers (cross‑encoder)  
+- [ ] Semantic chunking  
+- [ ] Agentic workflows  
 
 ---
 
-## **Why This Project Exists**
-If you're anything like me, you have notes scattered across apps, folders, and formats — ideas, research, tasks, references, half‑finished thoughts. Finding what you need, when you need it, can be frustrating. I wanted a simple, fast way to organize all of it and instantly surface the relevant pieces for whatever I’m working on.
+# Why This Project Exists
 
-- Expert‑in‑a‑Box was built to solve that problem.
+Most people have notes, research, and documents scattered across formats and folders. Finding what you need — and using it effectively — is hard.
 
-- It provides:
+**Expert‑in‑a‑Box** solves that by giving you:
 
-- A unified place to store and structure notes
-- Fast retrieval of the exact information needed for a task
-- A growing personal knowledge base you can build on over time
-- Local LLM‑powered insight without sending data to the cloud
-- Full transparency and control over how retrieval and reasoning work
+- A unified place to store and structure knowledge  
+- Fast retrieval of exactly what matters  
+- Local LLM‑powered insight  
+- Full transparency and control  
+- A foundation for agentic workflows  
 
-This project is for anyone who wants their notes to become a living, searchable knowledge system — and who values privacy, clarity, and local control. It’s a foundation for personal research assistants, knowledge bases, and agentic workflows that you can trust and extend.
+It’s a personal knowledge engine you can trust, extend, and understand.
 
-This project is licensed under the MIT License — see the LICENSE file for details.
+---
+
+# 📄 License
+MIT License — see `LICENSE` for details.
