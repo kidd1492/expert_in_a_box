@@ -147,7 +147,7 @@ A clean, three‑column interface:
 
 ---
 
-# 🛠️ Tools
+# Tools
 
 ### `wiki_search(term)`
 Fetches Wikipedia content.
@@ -160,7 +160,7 @@ Loads any supported file into the RAG system.
 
 ---
 
-# ⚙️ Installation & Quick Start
+# Installation & Quick Start
 
 ### 1. Install Ollama  
 Guide: [https://humansideoftek.blogspot.com/2025/09/ollama-local-model-deployment-guide.html](https://humansideoftek.blogspot.com/2025/09/ollama-local-model-deployment-guide.html)
@@ -229,5 +229,5 @@ It’s a personal knowledge engine you can trust, extend, and understand.
 
 ---
 
-# 📄 License
+# License
 MIT License — see `LICENSE` for details.
