@@ -47,10 +47,31 @@ function runChatMode(mode) {
 }
 
 function conversation() {
-    const answer = document.getElementById("ask-chatbot").value.trim();
+    const question = document.getElementById("ask-chatbot").value.trim();
     const viewer = document.getElementById("chat-viewer");
-    let answerDiv = document.createElement("div");
-    answerDiv.className = "chunk-block";
-    answerDiv.textContent = answer;
-    viewer.appendChild(answerDiv);
+
+    if (!question) return;
+
+    // Show user message
+    let userDiv = document.createElement("div");
+    userDiv.className = "question-block";
+    userDiv.textContent = question;
+    viewer.appendChild(userDiv);
+
+    // Call Flask route
+    fetch(`/chat_route/chatbot?query=${encodeURIComponent(question)}`)
+        .then(res => res.json())
+        .then(data => {
+            let botDiv = document.createElement("div");
+            botDiv.className = "answer-block";
+            botDiv.innerHTML = `<p>${data.answer}</p>`;
+            viewer.appendChild(botDiv);
+
+            // Auto-scroll
+            viewer.scrollTop = viewer.scrollHeight;
+        })
+        .catch(err => console.error("Chat error:", err));
+
+    // Clear input
+    document.getElementById("ask-chatbot").value = "";
 }

@@ -96,6 +96,25 @@ body {
     border-radius: 6px;
 }
 
+.question-block {
+    width: 65%;
+    padding: 10px;
+    margin-bottom: 12px;
+    background: #e0e0e0e0;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+.answer-block {
+    width: 65%;
+    margin-left: auto;
+    padding: 10px;
+    margin-bottom: 12px;
+    background: #b9b8b8;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
 .doc-item {
     cursor: pointer;
     padding: 6px 0;

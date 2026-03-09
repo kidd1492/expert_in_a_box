@@ -18,7 +18,6 @@ def human_node(state: AgentState) -> AgentState:
 
 def chat(state: AgentState):
     summary = state.get("summary", "")
-
     if summary:
         system_message = f"Summary of conversation earlier: {summary}"
         messages = [SystemMessage(content=system_message)] + state["messages"]
@@ -82,25 +81,21 @@ def summary_node(state: AgentState):
 
 graph = StateGraph(AgentState)
 
-graph.add_node("human_node", human_node)
 graph.add_node("chatbot", chat)
 graph.add_node("summary_node", summary_node)
 
-graph.add_edge(START, "human_node")
-
+graph.add_edge(START, "chatbot")
+graph.add_edge("chatbot", END)
+'''
 graph.add_conditional_edges(
-    "human_node",
+    "chatbot",
     should_continue,
     {
         "summarized": "summary_node",
         "end": END,
-        "chat": "chatbot",
     },
 )
-
-graph.add_edge("chatbot", "human_node")
-graph.add_edge("summary_node", "chatbot")
-
+'''
 app = graph.compile()
 
 # Optional: generate graph visualization
