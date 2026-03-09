@@ -1,8 +1,6 @@
 from flask import Blueprint, request, jsonify
 from rag.services.web_services import retrieval_service, chat_service, memory_service
-from rag.agents.ReAct_agent import app
-from langchain.messages import HumanMessage
-
+from utils.helper_functions import generate_new_thread_id
 
 chat_bp = Blueprint('chat_route', __name__, url_prefix='/chat_route')
 
@@ -25,7 +23,7 @@ def chat():
         result = "Unknown mode."
 
     return jsonify({
-        "answer": result,
+        "answer": result.content,
         "context": context
     })
 
@@ -33,18 +31,25 @@ def chat():
 @chat_bp.route("/chatbot")
 def chatbot():
     query = request.args.get("query", "")
-    user_input = [HumanMessage(content=query)]
-    thread_id = memory_service.get_last_thread_id()
-    result = memory_service.load_memory(thread_id)
-    print(result)
+    thread_id = memory_service.last_thread_id()
+    if thread_id:
+        thread_id = thread_id
+    else:
+        thread_id = generate_new_thread_id()
+
+    result = memory_service.load(thread_id)
     if not result:
         print(f"No memory found for thread {thread_id}. Starting fresh.")
-        app.invoke({"messages": user_input, 'thread_id': thread_id})
+        results = chat_service.invoke_chatbot(user_content=[query])
+        messages=[f'{query}", ' + m.content for m in [results]]
+        memory_service.save(thread_id, '', messages)
     else:
-        summary, messages_list = result
-        messages_list.append([user_input])
-        messages = HumanMessage(content=query)
         print(f"Loaded memory for thread {thread_id}")
-        responce = app.invoke({"messages": user_input, 'thread_id': thread_id})
-        last_message = responce["messages"][-1].content
-    return jsonify({"answer": f"{last_message}"})
+        summary, messages_list = result
+        messages_list.append(query)
+        results = chat_service.invoke_chatbot(messages_list)
+        messages=[m.content for m in [results]]
+        messages.append(results.content)
+        memory_service.save(thread_id, '', messages)
+
+    return jsonify({"answer": f"{results.content}"})

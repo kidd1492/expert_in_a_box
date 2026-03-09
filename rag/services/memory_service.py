@@ -11,6 +11,7 @@ class MemoryService:
         return self.memory_store.load_memory(thread_id)
 
     def save(self, thread_id: str, summary: str, messages: List[str]):
+        print(f"\nsaved\n")
         self.memory_store.save_memory(thread_id, summary, messages)
 
     def last_thread_id(self) -> Optional[str]:
