@@ -1,6 +1,8 @@
 from flask import Blueprint, request, jsonify
 from rag.services.web_services import retrieval_service, chat_service, memory_service
 from utils.helper_functions import generate_new_thread_id
+from langchain.messages import HumanMessage, AIMessage
+
 
 chat_bp = Blueprint('chat_route', __name__, url_prefix='/chat_route')
 
@@ -31,25 +33,25 @@ def chat():
 @chat_bp.route("/chatbot")
 def chatbot():
     query = request.args.get("query", "")
-    thread_id = memory_service.last_thread_id()
-    if thread_id:
-        thread_id = thread_id
-    else:
-        thread_id = generate_new_thread_id()
+    thread_id = memory_service.last_thread_id() or generate_new_thread_id()
 
-    result = memory_service.load(thread_id)
-    if not result:
-        print(f"No memory found for thread {thread_id}. Starting fresh.")
-        results = chat_service.invoke_chatbot(user_content=[query])
-        messages=[f'{query}", ' + m.content for m in [results]]
-        memory_service.save(thread_id, '', messages)
+    loaded = memory_service.load(thread_id)
+    if loaded:
+        summary, messages = loaded
     else:
-        print(f"Loaded memory for thread {thread_id}")
-        summary, messages_list = result
-        messages_list.append(query)
-        results = chat_service.invoke_chatbot(messages_list)
-        messages=[m.content for m in [results]]
-        messages.append(results.content)
-        memory_service.save(thread_id, '', messages)
+        summary, messages = "", []
 
-    return jsonify({"answer": f"{results.content}"})
+    # Add user message
+    messages.append(HumanMessage(content=query))
+
+    # Invoke model with full history
+    result = chat_service.invoke_chatbot(messages)
+
+    # Add result message
+    messages.append(AIMessage(content=result.content))
+
+    # Save back to DB
+    memory_service.save(thread_id, summary, messages)
+
+    return jsonify({"answer": result.content})
+

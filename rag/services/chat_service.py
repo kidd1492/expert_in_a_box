@@ -21,11 +21,9 @@ class ChatService:
         messages = [prompt, user_input]
         return self.model.invoke(messages)
     
-    def invoke_chatbot(self, user_content):
-        messages = [HumanMessage(content=m) for m in user_content]
-        user_input = HumanMessage(content=user_content)
-        messages = [user_input]
+    def invoke_chatbot(self, messages):
         return self.model.invoke(messages)
+
 
 
     def answer_question(self, question, chunks):
