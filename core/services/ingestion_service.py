@@ -2,7 +2,7 @@
 from core.rag_system.data_ingestion import read_document
 from core.rag_system.embedding import embed_documents
 from core.rag_system.vectors import VectorStore
-from core.logging.log_handler import doc_logger
+from logging_file.log_handler import doc_logger
 from core.rag_system.chunking import chunk_text, get_metadata
 from utils.helper_functions import delete_ingest_file
 

@@ -18,7 +18,7 @@ def start_ollama():
 def ensure_directories():
     os.makedirs("core/data", exist_ok=True)  # ensures directories exists
     os.makedirs("core/data/uploads", exist_ok=True)
-    os.makedirs("core/logging/logs", exist_ok=True)
+    os.makedirs("logging_file/logs", exist_ok=True)
     os.makedirs("core/data/youtube_files", exist_ok=True)
     
 

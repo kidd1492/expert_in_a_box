@@ -2,5 +2,5 @@ venv
 .env
 __pycache__
 data
-core/logging/logs
+logging_file/logs
 z_testing.py
