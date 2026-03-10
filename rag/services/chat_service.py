@@ -1,6 +1,7 @@
 # services/chat_service.py
 from langchain_ollama import ChatOllama
 from langchain.messages import HumanMessage, SystemMessage
+from langchain_classic.schema import BaseMessage
 
 def get_model():
     return ChatOllama(model="qwen2.5:3b")
@@ -24,7 +25,16 @@ class ChatService:
     def invoke_chatbot(self, messages):
         return self.model.invoke(messages)
 
-
+    def summarize_messages(self, messages: list[BaseMessage]) -> str:
+        summary_prompt = [
+            HumanMessage(content=(
+                "Summarize the following conversation in a concise way that preserves important facts, "
+                "names, goals, and context. Do NOT include irrelevant chit‑chat.\n\n"
+                f"{messages}"
+            ))
+        ]
+        result = self.model.invoke(summary_prompt)
+        return result.content
 
     def answer_question(self, question, chunks):
         context_text = self._build_context(chunks)

@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from rag.services.web_services import retrieval_service, chat_service, memory_service
 from utils.helper_functions import generate_new_thread_id
-from langchain.messages import HumanMessage, AIMessage
+from langchain.messages import HumanMessage, AIMessage, SystemMessage
 
 
 chat_bp = Blueprint('chat_route', __name__, url_prefix='/chat_route')
@@ -44,14 +44,29 @@ def chatbot():
     # Add user message
     messages.append(HumanMessage(content=query))
 
-    # Invoke model with full history
-    result = chat_service.invoke_chatbot(messages)
+    # Reduce if needed
+    new_summary, reduced_messages = memory_service.reduce_if_needed(
+        thread_id, messages, chat_service
+    )
 
-    # Add result message
+    if new_summary is not None:
+        summary = new_summary
+        messages = reduced_messages
+
+    # Invoke model with summary + messages
+    full_context = []
+    if summary:
+        full_context.append(SystemMessage(content=f"Conversation summary: {summary}"))
+    full_context.extend(messages)
+
+    result = chat_service.invoke_chatbot(full_context)
+
+    # Add assistant message
     messages.append(AIMessage(content=result.content))
 
-    # Save back to DB
+    # Save
     memory_service.save(thread_id, summary, messages)
 
     return jsonify({"answer": result.content})
+
 

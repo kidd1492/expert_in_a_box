@@ -21,6 +21,21 @@ class MemoryService:
 
         return summary, messages
 
+    def reduce_if_needed(self, thread_id: str, messages: list[BaseMessage], chat_service):
+        # Only reduce if more than 6 messages
+        if len(messages) <= 6:
+            return None, messages
+
+        # Split messages
+        old_messages = messages[:-2]   # everything except last 2
+        recent_messages = messages[-2:]  # last 2 messages
+
+        # Summarize old messages
+        summary = chat_service.summarize_messages(old_messages)
+        print("\n", "summarized")
+
+        # Return new summary + trimmed messages
+        return summary, recent_messages
 
 
     def save(self, thread_id, summary, messages: list[BaseMessage]):
