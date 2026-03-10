@@ -41,7 +41,7 @@ def get_youtube_videos(query="machine learning transformer", max_results=10):
     response = requests.get(url)
     if response.status_code == 200:
         videos = response.json().get("items", [])
-        file_path = f"rag/data/youtube_files/youtube.json"
+        file_path = f"core/data/youtube_files/youtube.json"
         save_json(file_path, videos)
         return videos
     else:

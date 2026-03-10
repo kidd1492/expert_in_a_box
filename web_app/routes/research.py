@@ -1,6 +1,6 @@
 # webapp/auth.py
 from flask import Blueprint, jsonify, render_template
-from rag.tools import tool_file
+from core.tools import tool_file
 from utils.helper_functions import parse_youtube_data
 import os
 
@@ -9,10 +9,10 @@ research_bp = Blueprint('research', __name__, url_prefix='/research')
 
 @research_bp.route("/home")
 def home():
-    if not os.path.exists("rag/data/youtube_files/youtube.json"):
+    if not os.path.exists("core/data/youtube_files/youtube.json"):
         return render_template("research_learning.html", videos=[])
 
-    load_last = tool_file.load_youtube_data("rag/data/youtube_files/youtube.json")
+    load_last = tool_file.load_youtube_data("core/data/youtube_files/youtube.json")
     cleaned = parse_youtube_data(load_last)
     return render_template('research_learning.html', videos=cleaned)
 

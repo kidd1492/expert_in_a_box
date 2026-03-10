@@ -5,7 +5,7 @@ from utils.helper_functions import get_scored, get_titles
 
 # DB Connection Helper
 # TODO add to helper utils so memory can use it 
-def connect_db(db_path="rag/data/rag_store.db"):
+def connect_db(db_path="core/data/rag_store.db"):
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     return conn, cursor
@@ -13,7 +13,7 @@ def connect_db(db_path="rag/data/rag_store.db"):
 
 class VectorStore:
 
-    def __init__(self, db_path="rag/data/rag_store.db"):
+    def __init__(self, db_path="core/data/rag_store.db"):
         self.db_path = db_path
         self._init_schema()
 

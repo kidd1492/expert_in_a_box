@@ -1,7 +1,7 @@
 # core/data_ingestion.py
 import os, re, fitz
 from utils.helper_functions import read_file
-from rag.logging.log_handler import error_logger
+from core.logging.log_handler import error_logger
 
 
 def read_document(file_path: str) -> str:

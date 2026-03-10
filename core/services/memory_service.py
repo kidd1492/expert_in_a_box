@@ -1,6 +1,6 @@
 # services/memory_service.py
 from typing import Optional
-from rag.rag_system.memory import MemoryStore
+from core.rag_system.memory import MemoryStore
 import json
 from langchain_classic.schema import BaseMessage, messages_from_dict, message_to_dict
 

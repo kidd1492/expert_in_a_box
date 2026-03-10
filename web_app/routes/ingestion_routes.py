@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
-from rag.services.web_services import ingestion_service
-from rag.tools import tool_file
+from core.services.web_services import ingestion_service
+from core.tools import tool_file
 from utils.helper_functions import write_file
 import os
 
@@ -14,7 +14,7 @@ def ingest():
     if not file:
         return jsonify({"status": "no file"}), 400
 
-    file_path = f"rag/data/uploads/{file.filename}"
+    file_path = f"core/data/uploads/{file.filename}"
     if os.path.exists(file_path):
         return jsonify({"status": "file already exist"}), 400 
     
@@ -46,7 +46,7 @@ def add_wiki(term):
 
     # Build file path
     new_term = term.replace(" ", "_")
-    file_path = f"rag/data/uploads/{new_term}.txt"
+    file_path = f"core/data/uploads/{new_term}.txt"
 
     # Reject duplicates (same behavior as /ingest)
     if os.path.exists(file_path):

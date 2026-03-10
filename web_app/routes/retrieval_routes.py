@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from rag.services.web_services import retrieval_service
+from core.services.web_services import retrieval_service
 
 retrieval_bp = Blueprint('retrieval', __name__, url_prefix='/retrieval')
 

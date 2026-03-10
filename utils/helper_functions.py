@@ -32,15 +32,15 @@ def parse_youtube_data(videos):
 def generate_new_thread_id():
     return str(uuid.uuid4())
 
+
 def delete_ingest_file(titles: list[str]) -> None:
     for title in titles:
-        file_path = Path("rag/data/uploads") / title
+        file_path = Path("core/data/uploads") / title
 
         if file_path.exists():
             file_path.unlink()
         else:
             print(f"File not found: {file_path}")
-
 
 
 def get_titles(titles):

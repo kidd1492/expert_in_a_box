@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from rag.services.web_services import retrieval_service, chat_service, memory_service
+from core.services.web_services import retrieval_service, chat_service, memory_service
 from utils.helper_functions import generate_new_thread_id
 from langchain.messages import HumanMessage, AIMessage, SystemMessage
 
