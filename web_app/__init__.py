@@ -20,23 +20,25 @@ def ensure_directories():
     os.makedirs("core/data/uploads", exist_ok=True)
     os.makedirs("core/logging/logs", exist_ok=True)
     os.makedirs("core/data/youtube_files", exist_ok=True)
-
+    
 
 def create_app():
     ensure_directories()
     start_ollama()
+
     app = Flask(__name__)
     app.config['SECRET_KEY'] = 'dev-key'
-    app.config['DATABASE'] = 'data/rag_store.db'
+    app.config['DATABASE'] = 'core/data/rag_store.db'
+
+    # Import blueprints from the api package
+    from api.auth import auth_bp
+    from api.func_routes import main_bp
+    from api.research import research_bp
+    from api.chat_routes import chat_bp
+    from api.ingestion_routes import ingestion_bp
+    from api.retrieval_routes import retrieval_bp
 
     # Register blueprints
-    from .routes.auth import auth_bp
-    from .routes.func_routes import main_bp
-    from .routes.research import research_bp
-    from .routes.chat_routes import chat_bp 
-    from .routes.ingestion_routes import ingestion_bp
-    from .routes.retrieval_routes import retrieval_bp
-
     app.register_blueprint(auth_bp)
     app.register_blueprint(main_bp)
     app.register_blueprint(research_bp)
