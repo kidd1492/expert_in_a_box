@@ -1,9 +1,9 @@
 # services/ingestion_service.py
-from rag.core.data_ingestion import read_document
-from rag.core.embedding import embed_documents
-from rag.core.vectors import VectorStore
+from rag.rag_system.data_ingestion import read_document
+from rag.rag_system.embedding import embed_documents
+from rag.rag_system.vectors import VectorStore
 from rag.logging.log_handler import doc_logger
-from rag.core.chunking import chunk_text, get_metadata
+from rag.rag_system.chunking import chunk_text, get_metadata
 from utils.helper_functions import delete_ingest_file
 
 

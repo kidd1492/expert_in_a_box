@@ -2,7 +2,7 @@
 from rag.services.ingestion_service import IngestionService
 from rag.services.retrieval_service import RetrievalService
 from rag.services.chat_service import ChatService
-from rag.core.vectors import VectorStore
+from rag.rag_system.vectors import VectorStore
 from rag.services.memory_service import MemoryService
 
 

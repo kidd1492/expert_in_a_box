@@ -1,5 +1,5 @@
-from rag.core.vectors import VectorStore
-from rag.core.embedding import embed_text
+from rag.rag_system.vectors import VectorStore
+from rag.rag_system.embedding import embed_text
 
 class RetrievalService:
     def __init__(self, vector_store: VectorStore | None = None):

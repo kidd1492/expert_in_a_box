@@ -2,7 +2,7 @@
 import wikipedia as wk
 import json, os, requests
 from dotenv import load_dotenv
-from datetime import date, datetime, timedelta
+from datetime import datetime, timedelta
 from utils.helper_functions import save_json
 
 
