@@ -17,19 +17,6 @@ def save_json(file_path, content):
         json.dump(content, f, indent=2, ensure_ascii=False)
 
 
-
-def parse_youtube_data(videos):
-    cleaned = []
-    for v in videos:
-        cleaned.append({
-            "title": v["snippet"]["title"],
-            "description": v["snippet"]["description"],
-            "thumbnail": v["snippet"]["thumbnails"]["medium"]["url"],
-            "videoId": v["id"]["videoId"]
-        })
-    return cleaned
-
-
 def delete_ingest_file(titles: list[str]) -> None:
     for title in titles:
         file_path = Path("core/data/uploads") / title

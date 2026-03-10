@@ -1,7 +1,6 @@
 from flask import Blueprint, request, jsonify
 from api.dependencies import ingestion_service
 from core.tools import tool_file
-from utils.helper_functions import write_file
 import os
 
 
@@ -54,7 +53,8 @@ def add_wiki(term):
 
     # Save file
     try:
-        write_file(file_path, content)
+        with open(file_path, "w", encoding="UTF-8") as file:
+            file.write(content)
     except Exception as e:
         return jsonify({"error": f"Failed to save wiki file: {str(e)}"}), 500
 

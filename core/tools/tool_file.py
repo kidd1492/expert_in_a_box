@@ -54,3 +54,14 @@ def load_youtube_data(file_path):
     with open(file_path, 'r', encoding='utf-8') as file:
         return json.load(file)
 
+
+def parse_youtube_data(videos):
+    cleaned = []
+    for v in videos:
+        cleaned.append({
+            "title": v["snippet"]["title"],
+            "description": v["snippet"]["description"],
+            "thumbnail": v["snippet"]["thumbnails"]["medium"]["url"],
+            "videoId": v["id"]["videoId"]
+        })
+    return cleaned
