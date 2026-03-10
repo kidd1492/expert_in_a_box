@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from core.services.web_services import ingestion_service
+from api.dependencies import ingestion_service
 from core.tools import tool_file
 from utils.helper_functions import write_file
 import os

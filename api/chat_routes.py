@@ -1,6 +1,5 @@
 from flask import Blueprint, request, jsonify
-from core.services.web_services import retrieval_service, chat_service, memory_service
-from utils.helper_functions import generate_new_thread_id
+from api.dependencies import retrieval_service, chat_service, memory_service
 from langchain.messages import HumanMessage, AIMessage, SystemMessage
 
 
@@ -33,7 +32,7 @@ def chat():
 @chat_bp.route("/chatbot")
 def chatbot():
     query = request.args.get("query", "")
-    thread_id = memory_service.last_thread_id() or generate_new_thread_id()
+    thread_id = memory_service.last_thread_id() or memory_service.generate_new_thread_id()
 
     loaded = memory_service.load(thread_id)
     if loaded:

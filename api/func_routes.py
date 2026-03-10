@@ -1,5 +1,5 @@
 from flask import Blueprint,render_template
-from core.services.web_services import retrieval_service
+from api.dependencies import retrieval_service
 
 
 main_bp = Blueprint('main', __name__)

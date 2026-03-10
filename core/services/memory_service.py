@@ -1,7 +1,7 @@
 # services/memory_service.py
 from typing import Optional
 from core.rag_system.memory import MemoryStore
-import json
+import json, uuid
 from langchain_classic.schema import BaseMessage, messages_from_dict, message_to_dict
 
 
@@ -48,3 +48,6 @@ class MemoryService:
     
     def conversation_history(self):
         return self.memory_store.conversation_history(self)
+
+    def generate_new_thread_id(self):
+        return str(uuid.uuid4())

@@ -1,4 +1,4 @@
-import json, uuid
+import json
 from pathlib import Path
 import numpy as np
 
@@ -28,9 +28,6 @@ def parse_youtube_data(videos):
             "videoId": v["id"]["videoId"]
         })
     return cleaned
-
-def generate_new_thread_id():
-    return str(uuid.uuid4())
 
 
 def delete_ingest_file(titles: list[str]) -> None:
