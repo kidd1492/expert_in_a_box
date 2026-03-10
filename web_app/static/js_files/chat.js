@@ -75,3 +75,47 @@ function conversation() {
     // Clear input
     document.getElementById("ask-chatbot").value = "";
 }
+
+document.addEventListener("DOMContentLoaded", loadChatHistory);
+
+
+function loadChatHistory() {
+    fetch("/chat_route/chat/history")
+        .then(res => res.json())
+        .then(data => {
+            const viewer = document.getElementById("chat-viewer");
+            viewer.innerHTML = "";
+
+            // Show summary if it exists
+            if (data.summary) {
+                const summaryDiv = document.createElement("div");
+                summaryDiv.className = "question-block";
+                summaryDiv.innerHTML = `<strong>Summary:</strong> ${data.summary}`;
+                viewer.appendChild(summaryDiv);
+            }
+
+            // Render messages using SAME style as live chat
+            data.messages.forEach(msg => {
+                const div = document.createElement("div");
+
+                if (msg.type === "human") {
+                    div.className = "question-block";
+                } else {
+                    div.className = "answer-block";
+                }
+
+                div.innerHTML = `<p>${msg.content}</p>`;
+                viewer.appendChild(div);
+            });
+
+            if (!data.messages.length && !data.summary) {
+                viewer.innerHTML = "<p>Start a Chat…</p>";
+            }
+
+            // Auto-scroll to bottom
+            viewer.scrollTop = viewer.scrollHeight;
+        })
+        .catch(err => console.error("History load error:", err));
+}
+
+

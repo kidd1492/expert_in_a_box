@@ -70,3 +70,27 @@ def chatbot():
     return jsonify({"answer": result.content})
 
 
+@chat_bp.route("/chat/history")
+def chat_history():
+    thread_id = memory_service.last_thread_id()
+    if not thread_id:
+        return jsonify({"summary": "", "messages": []})
+
+    loaded = memory_service.load(thread_id)
+    if not loaded:
+        return jsonify({"summary": "", "messages": []})
+
+    summary, messages = loaded
+
+    # Convert messages to simple JSON for the UI
+    ui_messages = []
+    for m in messages:
+        ui_messages.append({
+            "type": m.type,       # "human" or "ai"
+            "content": m.content
+        })
+
+    return jsonify({
+        "summary": summary,
+        "messages": ui_messages
+    })
