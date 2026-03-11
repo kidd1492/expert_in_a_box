@@ -4,8 +4,7 @@ from core.rag_system.embedding import embed_documents
 from core.rag_system.vectors import VectorStore
 from logging_file.log_handler import doc_logger
 from core.rag_system.chunking import chunk_text, get_metadata
-from utils.helper_functions import delete_ingest_file
-
+from pathlib import Path 
 
 class IngestionService:
     def __init__(self, vector_store: VectorStore | None = None):
@@ -41,3 +40,13 @@ class IngestionService:
         titles = titles.split(",")
         delete_ingest_file(titles)
         return self.vector_store.remove_file(titles)
+
+
+def delete_ingest_file(titles: list[str]) -> None:
+    for title in titles:
+        file_path = Path("core/data/uploads") / title
+
+        if file_path.exists():
+            file_path.unlink()
+        else:
+            print(f"File not found: {file_path}")

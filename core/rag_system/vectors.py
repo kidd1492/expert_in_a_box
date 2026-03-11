@@ -1,14 +1,7 @@
 import sqlite3, json
 import numpy as np
 from typing import List, Dict, Any
-from utils.helper_functions import get_scored, get_titles
-
-# DB Connection Helper
-# TODO add to helper utils so memory can use it 
-def connect_db(db_path="core/data/rag_store.db"):
-    conn = sqlite3.connect(db_path)
-    cursor = conn.cursor()
-    return conn, cursor
+from utils.helper_functions import connect_db
 
 
 class VectorStore:
@@ -85,6 +78,7 @@ class VectorStore:
         return scored[:top_k]
 
 
+
     def list_docs(self):
         conn, cursor = connect_db(self.db_path)
         cursor.execute("SELECT DISTINCT title FROM documents")
@@ -111,4 +105,40 @@ class VectorStore:
         conn.close()
         return
 
+# helper functions for vector store
 
+def get_titles(titles):
+    title_list = [t.strip() for t in titles.split(",") if t.strip()]
+    placeholders = ",".join("?" * len(title_list))
+    return placeholders, title_list
+
+
+def get_scored(query_embedding, rows, search_type):
+    # Normalize query embedding
+    q = query_embedding.astype(np.float32)
+    q_norm = q / (np.linalg.norm(q) + 1e-8)
+
+    scored = []
+
+    for doc_id, content, metadata_json, emb_blob in rows:
+        emb = np.frombuffer(emb_blob, dtype=np.float32)
+
+        # Normalize stored embedding
+        emb_norm = emb / (np.linalg.norm(emb) + 1e-8)
+
+        # Compute similarity score
+        if search_type == "dot":
+            score = float(np.dot(q, emb))
+        else:
+            score = float(np.dot(q_norm, emb_norm))
+
+        metadata = json.loads(metadata_json) if metadata_json else {}
+
+        scored.append({
+            "id": doc_id,
+            "content": content,
+            "metadata": metadata,
+            "score": score
+        })
+    scored.sort(key=lambda x: x["score"], reverse=True)
+    return scored
