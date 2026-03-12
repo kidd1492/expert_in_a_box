@@ -26,5 +26,11 @@ def youtube_search(query):
 
 @research_bp.route('/wiki/<term>')
 def wiki_search(term):
-    result = tool_file.wiki_search(term)
-    return jsonify({"status": result})
+    # Fetch wiki content
+    try:
+        content = tool_file.wiki_search(term)
+        if not content:
+            return jsonify({"error": "No content returned from wiki search"}), 400
+    except Exception as e:
+        return jsonify({"error": f"Wiki search failed: {str(e)}"}), 500
+    return jsonify({"status": content})

@@ -3,7 +3,6 @@ from api.dependencies import ingestion_service
 from core.tools import tool_file
 import os
 
-
 ingestion_bp = Blueprint('ingestion', __name__, url_prefix='/ingestion')
 
 
@@ -16,11 +15,6 @@ def ingest():
     file_path = f"core/data/uploads/{file.filename}"
     if os.path.exists(file_path):
         return jsonify({"status": "file already exist"}), 400 
-    
-    try:
-        file.save(file_path)
-    except Exception as e:
-        return jsonify({"error": f"Failed to save wiki file: {str(e)}"}), 500
 
     # Ingest into vector store
     try:
@@ -28,6 +22,7 @@ def ingest():
         return jsonify({"status": result})
     except Exception as e:
         return jsonify({"error": f"Ingestion failed: {str(e)}"}), 400
+
 
 
 @ingestion_bp.route('/add_wiki/<term>')
