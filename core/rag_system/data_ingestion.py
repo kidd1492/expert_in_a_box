@@ -1,6 +1,5 @@
 # core/data_ingestion.py
 import os, re, fitz
-from utils.helper_functions import read_file
 from logging_file.log_handler import error_logger
 
 
@@ -15,7 +14,8 @@ def read_document(file_path: str) -> str:
         text = load_pdf(file_path)
 
     elif ext in ["txt", "md"]:
-        text = read_file(file_path)
+        with open(file_path, "r", encoding="UTF-8") as file:
+            text = file.read()
     else:
         error_logger.error(f"Unsupported file type: {file_path}")
         return f""

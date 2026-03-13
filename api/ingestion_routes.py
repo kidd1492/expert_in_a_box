@@ -16,6 +16,11 @@ def ingest():
     if os.path.exists(file_path):
         return jsonify({"status": "file already exist"}), 400 
 
+    try:
+        file.save(file_path)
+    except Exception as e:
+        return jsonify({"error": f"Ingestion failed: {str(e)}"}), 400
+    
     # Ingest into vector store
     try:
         result = ingestion_service.add_file(file_path)
