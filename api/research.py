@@ -17,7 +17,8 @@ def home():
     videos = load_last['videos']
     summary = load_last['overview']
     subtopics = load_last['subtopics']
-    return render_template('research_learning.html', videos=videos, summary=summary, subtopics=subtopics)
+    links = load_last['links']
+    return render_template('research_learning.html', videos=videos, summary=summary, subtopics=subtopics, links=links)
 
 
 @research_bp.route('/new_topic/<term>')

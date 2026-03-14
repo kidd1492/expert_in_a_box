@@ -6,19 +6,6 @@ from datetime import datetime, timedelta
 from langchain_ollama import ChatOllama
 
 
-def summarize_topic(term: str) -> str:
-    model = ChatOllama(model="qwen2.5:3b")
-    prompt = f"Give a clear one or two paragraph overview of the topic '{term}'."
-    result = model.invoke(prompt)
-    return result.content
-
-def generate_subtopics(term: str) -> list[str]:
-    model = ChatOllama(model="qwen2.5:3b")
-    prompt = f"List 5 essential subtopics someone must learn to understand '{term}'. a list of terms only no other reponse. example- 'subtopics: [subtopic,subtopic, ...]'"
-    response = model.invoke(prompt)
-    subtopic_list = response.content[1:-1].split(",")
-    return subtopic_list
-
 def wiki_search(term):
     """This function will gather research information from wikipedia and save it to a file."""
     try:
@@ -81,4 +68,18 @@ def save_json(path, data):
 def load_topic_data(file_path):
     with open(file_path, 'r', encoding='utf-8') as file:
         return json.load(file)
-    
+
+
+def summarize_topic(term: str) -> str:
+    model = ChatOllama(model="qwen2.5:3b")
+    prompt = f"Give a clear one or two paragraph overview of the topic '{term}'."
+    result = model.invoke(prompt)
+    return result.content
+
+
+def generate_subtopics(term: str) -> list[str]:
+    model = ChatOllama(model="qwen2.5:3b")
+    prompt = f"List 5 essential subtopics someone must learn to understand '{term}'. a list of terms only no other reponse. example- 'subtopics: [subtopic,subtopic, ...]'"
+    response = model.invoke(prompt)
+    subtopic_list = response.content[1:-1].split(",")
+    return subtopic_list
