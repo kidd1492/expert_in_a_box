@@ -3,8 +3,21 @@ import wikipedia as wk
 import json, os, requests
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
-from utils.helper_functions import save_json
+from langchain_ollama import ChatOllama
 
+
+def summarize_topic(term: str) -> str:
+    model = ChatOllama(model="qwen2.5:3b")
+    prompt = f"Give a clear one or two paragraph overview of the topic '{term}'."
+    result = model.invoke(prompt)
+    return result.content
+
+def generate_subtopics(term: str) -> list[str]:
+    model = ChatOllama(model="qwen2.5:3b")
+    prompt = f"List 5 essential subtopics someone must learn to understand '{term}'. a list of terms only no other reponse. example- 'subtopics: [subtopic,subtopic, ...]'"
+    response = model.invoke(prompt)
+    subtopic_list = response.content[1:-1].split(",")
+    return subtopic_list
 
 def wiki_search(term):
     """This function will gather research information from wikipedia and save it to a file."""
@@ -20,7 +33,7 @@ def wiki_search(term):
     return response
 
 
-def get_youtube_videos(query="machine learning transformer", max_results=10):
+def get_youtube_videos(query, max_results=3):
     load_dotenv()
     youtube_api_key = os.getenv("YOUTUBE_API_KEY")
 
@@ -41,21 +54,15 @@ def get_youtube_videos(query="machine learning transformer", max_results=10):
     response = requests.get(url)
     if response.status_code == 200:
         videos = response.json().get("items", [])
-        file_path = f"core/data/youtube_files/youtube.json"
-        save_json(file_path, videos)
-        return videos
+        video_data = parse_video_data(videos)
+        return video_data
     else:
         print("Failed to fetch videos.")
         print(response.text)
         return []
 
 
-def load_youtube_data(file_path):
-    with open(file_path, 'r', encoding='utf-8') as file:
-        return json.load(file)
-
-
-def parse_youtube_data(videos):
+def parse_video_data(videos):
     cleaned = []
     for v in videos:
         cleaned.append({
@@ -65,3 +72,13 @@ def parse_youtube_data(videos):
             "videoId": v["id"]["videoId"]
         })
     return cleaned
+
+
+def save_json(path, data):
+    with open(path, "a") as f:
+        json.dump(data, f, indent=2)
+
+def load_topic_data(file_path):
+    with open(file_path, 'r', encoding='utf-8') as file:
+        return json.load(file)
+    

@@ -1,37 +1,3 @@
-function loadVideos() {
-    const term = document.getElementById("video-input").value.trim();
-    if (!term) {
-        alert("Enter a search term");
-        return;
-    }
-
-    fetch(`/research/youtube/${term}`)
-        .then(res => res.json())
-        .then(videos => {
-            const container = document.getElementById("video-results");
-            container.innerHTML = "";
-
-            videos.forEach(v => {
-                const div = document.createElement("div");
-                div.className = "video-card";
-
-                div.innerHTML = `
-                    <img src="${v.thumbnail}" class="thumb"/>
-                    <h4>${v.title}</h4>
-                    <p>${v.description}</p>
-                    <a href="https://www.youtube.com/watch?v=${v.videoId}" target="_blank">
-                        Watch on YouTube
-                    </a>
-                `;
-
-                container.appendChild(div);
-            });
-        })
-        .catch(err => {
-            console.error("Video fetch error:", err);
-        });
-}
-
 
 function runWikiSearch() {
     const term = document.getElementById("wiki-input").value.trim();
@@ -56,4 +22,24 @@ function runWikiSearch() {
             console.error("Wiki search error:", err);
             document.getElementById("wiki-results").innerHTML = "<p>Error performing wiki search.</p>";
         });
+}
+
+function newTopic() {
+    const term = document.getElementById("topic-input").value;
+    const overviewContainer = document.getElementById("topic-overview");
+    const videoContainer = document.getElementById("video-results");
+    const linksContainer = document.getElementById("links-container");
+    const subtopicContainer = document.getElementById("subtopic-container");
+
+    if (!term) {
+        alert("Please enter a search term.");
+        return;
+    }
+    
+    fetch(`/research/new_topic/${encodeURIComponent(term)}`)
+        .then(response => response.json())
+        .then(data => {
+            let summary = data.overview;
+            overviewContainer.innerHTML = summary;
+        });    
 }

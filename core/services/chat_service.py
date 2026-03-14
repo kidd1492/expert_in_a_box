@@ -55,3 +55,14 @@ class ChatService:
         context_text = self._build_context(chunks)
         system_prompt = "Create an outline of the following content:"
         return self._invoke(system_prompt, context_text)
+
+
+    def summarize_topic(self, term: str) -> str:
+        prompt = f"Give a clear one or two paragraph overview of the topic '{term}'."
+        return self.model.invoke(prompt)
+
+    def generate_subtopics(self, term: str) -> list[str]:
+        prompt = f"List 5 essential subtopics someone must learn to understand '{term}'. a list of terms only no other reponse. example- 'subtopics: [subtopic,subtopic, ...]'"
+        response = self.model.invoke(prompt)
+        return response
+

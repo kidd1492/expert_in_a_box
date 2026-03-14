@@ -151,6 +151,15 @@ body {
     overflow-y: auto;
 }
 
+.topic-overview {
+    background: white;
+    border: 1px solid #ccc;
+    height: 30vh;
+    padding: 10px;
+    border-radius: 6px;
+    overflow-y: auto;
+}
+
 
 .video-card {
     border: 1px solid #ccc;

@@ -38,13 +38,12 @@
 
         <input id="query-input" type="text" placeholder="Enter your query..." class="wiki-input">
         <button onclick="runQuery()" class="wiki-btn">Query Selected Documents</button>
+
         <div class="chat-buttons">
             <button onclick="chatAsk()" class="wiki-btn">Ask Question</button>
             <button onclick="chatSummarize()" class="wiki-btn">Summarize</button>
             <button onclick="chatOutline()" class="wiki-btn">Outline</button>
         </div>
-
-
     </div>
 
 
@@ -59,10 +58,10 @@
         <div id="wiki-results" class="wiki-results">
             <p>Results will appear here…</p>
         </div>
+
         <button onclick="addWikiSearch()" class="ask-btn">Add Results</button>
         <button class="ask-btn" onclick="triggerFileUpload()">Add File</button>
         <input type="file" id="file-input" style="display:none" onchange="uploadFile()">
-
     </div>
 
 
