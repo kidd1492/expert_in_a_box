@@ -1,0 +1,25 @@
+{
+  "overview": "overview",
+  "videos": [
+    {
+      "title": "Stop Burning AI Credits \u2014 OpenClaw + Python 24/7 Job Finder \ud83e\udd9e\ud83d\udc0d",
+      "description": "Stop burning AI credits on tasks Python can handle for free In this video, we build a cost-efficient OpenClaw workflow that ...",
+      "thumbnail": "https://i.ytimg.com/vi/ehfTs0wdW5g/mqdefault.jpg",
+      "videoId": "ehfTs0wdW5g"
+    },
+    {
+      "title": "Stanford Professor Codes a Python Game in 10 Minutes",
+      "description": "A glimpse of coding a fun game of 20 questions with Chris Piech :) Enjoyed following along? Continue your journey and attend a ...",
+      "thumbnail": "https://i.ytimg.com/vi/O8laoQ97_z0/mqdefault.jpg",
+      "videoId": "O8laoQ97_z0"
+    }
+  ],
+  "subtopics": [
+    "subtopic_1",
+    "subtopic_2"
+  ],
+  "links": [
+    "www.some_link.com",
+    "www.google.com"
+  ]
+}
