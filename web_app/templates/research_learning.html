@@ -16,9 +16,8 @@
                 </div>    
             {% endif %}
 
-        
         <h2>Subtopic</h2>
-        <div id="subtopic-container" class="topic-overview">
+        <div id="subtopic-container" class="subtopic-container">
             {% if subtopics %}
                 <ul>
                 {% for t in subtopics %}
@@ -31,7 +30,7 @@
         </div>
 
         <h2>Helpful Web Links</h2>
-        <div id="links-container">
+        <div id="links-container" class="subtopic-container">
             {% if links %}
                 <ul>
                 {% for l in links %}

@@ -1,5 +1,39 @@
+/* Global Theme */
+:root {
+    --accent: #b3203b;          /* Deep crimson */
+    --accent-light: #d94a63;    /* Hover crimson */
+    --panel-bg: linear-gradient(180deg, #121213, #494747, #747171);        /* Soft neutral panel */
+    --panel-border: #b8b8b8;    /* Softer border */
+    
+    /* Chat bubbles */
+    --chat-user: #e6e3e3;       /* Dark charcoal */
+    --chat-ai: #e9e5e5;         /* Slightly lighter charcoal */
+    
+    /* Text */
+    --text-light: #080808;      /* Soft white */
+    --text-muted: #080808;      /* Muted gray */
+    
+    --hover-accent: #b3203b;
+}
+
+.message-meta {
+    font-size: 0.80rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+
+h2, h3 {
+    color: #b8b8b8;
+}
+
+/* Background */
 body {
-    background-color: rgb(192, 191, 191);
+    background: linear-gradient(180deg, #000, #918b8c, #000);
+    font-family: Arial, sans-serif;
+    line-height: 1.25;
+    color: #222;
+    margin: 0;
 }
 
 /* Layout grid */
@@ -15,11 +49,12 @@ body {
 .left-column,
 .middle-column,
 .right-column {
-    background: rgb(243, 240, 240);
+    background: var(--panel-bg);
     padding: 15px;
-    border: 2px, solid black;
-    border-radius: 5px;
+    border: 2px solid black;
+    border-radius: 6px;
     overflow-y: auto;
+    box-shadow: 0 0 6px rgba(0,0,0,0.2);
 }
 
 /* Lists */
@@ -38,7 +73,7 @@ body {
 /* Chat window */
 .chat-window {
     background: white;
-    border: 1px solid #ccc;
+    border: 1px solid var(--panel-border);
     height: 60vh;
     padding: 10px;
     border-radius: 6px;
@@ -48,7 +83,7 @@ body {
 /* Document viewer */
 .doc-viewer {
     background: white;
-    border: 1px solid #ccc;
+    border: 1px solid var(--panel-border);
     height: 53vh;
     padding: 10px;
     border-radius: 6px;
@@ -57,17 +92,18 @@ body {
 
 /* Button */
 .ask-btn {
-    background-color: rgb(198, 201, 200);
+    background-color: #d4d4d4;
     margin-top: 15px;
     width: 100%;
     padding: 10px;
-    border: 2px solid, grey;
+    border: 2px solid grey;
     border-radius: 6px;
     cursor: pointer;
+    transition: 0.2s ease;
 }
 
 .ask-btn:hover {
-    background: #005fcc;
+    background: var(--accent);
     color: white;
 }
 
@@ -75,7 +111,7 @@ body {
 .sidebar {
     list-style: none;
     padding: 10px;
-    background: #222;
+    background: #111;
     color: white;
     margin: 0;
     display: flex;
@@ -85,46 +121,59 @@ body {
 .sidebar a {
     color: white;
     text-decoration: none;
+    transition: 0.2s ease;
 }
 
+.sidebar a:hover {
+    color: var(--hover-accent);
+}
 
+/* Blocks */
 .chunk-block {
     padding: 10px;
     margin-bottom: 12px;
-    background: #fff;
-    border: 1px solid #ccc;
+    background: white;
+    border: 1px solid var(--panel-border);
     border-radius: 6px;
 }
 
+/* Chat bubbles */
 .question-block {
-    width: 65%;
-    padding: 10px;
-    margin-bottom: 12px;
-    background: #e0e0e0e0;
-    border: 1px solid #ccc;
-    border-radius: 6px;
+    max-width: 70%;
+    padding: 12px 16px;
+    margin-bottom: 14px;
+    background: var(--chat-user);
+    color: var(--text-light);
+    border: 1px solid var(--panel-border);
+    border-radius: 18px 18px 18px 6px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.25);
 }
 
 .answer-block {
-    width: 65%;
+    max-width: 70%;
     margin-left: auto;
-    padding: 10px;
-    margin-bottom: 12px;
-    background: #b9b8b8;
-    border: 1px solid #ccc;
-    border-radius: 6px;
+    padding: 12px 16px;
+    margin-bottom: 14px;
+    background: var(--chat-ai);
+    color: var(--text-light);
+    border: 1px solid var(--panel-border);
+    border-radius: 18px 18px 6px 18px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.25);
 }
 
+
+/* Document items */
 .doc-item {
     cursor: pointer;
     padding: 6px 0;
+    transition: 0.2s ease;
 }
 
 .doc-item:hover {
-    color: #0078ff;
+    color: var(--hover-accent);
 }
 
-
+/* Wiki search */
 .wiki-input {
     width: 90%;
     padding: 8px;
@@ -132,19 +181,22 @@ body {
 }
 
 .wiki-btn {
-    background-color: rgb(198, 201, 200);
+    background-color: #d4d4d4;
     padding: 8px 12px;
     margin-bottom: 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s ease;
 }
 
 .wiki-btn:hover {
-    background-color: #0078ff;
+    background-color: var(--hover-accent);
     color: white;
 }
 
 .wiki-results {
     background: white;
-    border: 1px solid #ccc;
+    border: 1px solid var(--panel-border);
     height: 44vh;
     padding: 10px;
     border-radius: 6px;
@@ -153,19 +205,29 @@ body {
 
 .topic-overview {
     background: white;
-    border: 1px solid #ccc;
+    border: 1px solid var(--panel-border);
     height: 30vh;
     padding: 10px;
     border-radius: 6px;
     overflow-y: auto;
 }
 
+.subtopic-container {
+    background: white;
+    border: 1px solid var(--panel-border);
+    height: 17vh;
+    padding: 10px;
+    border-radius: 6px;
+    overflow-y: auto;
+}
 
+/* Video cards */
 .video-card {
-    border: 1px solid #ccc;
+    border: 1px solid var(--panel-border);
     padding: 10px;
     margin-bottom: 12px;
     border-radius: 6px;
+    background: white;
 }
 
 .video-card img.thumb {
