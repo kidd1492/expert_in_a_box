@@ -1,13 +1,10 @@
 # agents/tool_file.py
-# agents/tool_file.py
 import wikipedia as wk
 import json, os, requests
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
 from langchain_ollama import ChatOllama
 from tavily import TavilyClient
-from typing import Dict, Any
-
 
 
 def wiki_search(term):
@@ -66,7 +63,7 @@ def parse_video_data(videos):
 
 
 def save_json(path, data):
-    with open(path, "a") as f:
+    with open(path, "w") as f:
         json.dump(data, f, indent=2)
 
 def load_topic_data(file_path):

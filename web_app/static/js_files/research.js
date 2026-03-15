@@ -26,6 +26,20 @@ function runWikiSearch() {
 
 function newTopic() {
     const term = document.getElementById("topic-input").value;
+    if (!term) {
+        alert("Please enter a search term.");
+        return;
+    }
+    
+    fetch(`/research/new_topic/${encodeURIComponent(term)}`)
+        .then(response => response.json())
+        .then(data => {
+            location.reload();
+        });    
+}
+
+function subTopic() {
+    const term = document.getElementById("topic-input").value;
     const overviewContainer = document.getElementById("topic-overview");
     const videoContainer = document.getElementById("video-results");
     const linksContainer = document.getElementById("links-container");
@@ -36,7 +50,7 @@ function newTopic() {
         return;
     }
     
-    fetch(`/research/new_topic/${encodeURIComponent(term)}`)
+    fetch(`/research/subtopic/${encodeURIComponent(term)}`)
         .then(response => response.json())
         .then(data => {
             let summary = data.overview;
