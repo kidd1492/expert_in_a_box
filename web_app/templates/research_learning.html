@@ -32,16 +32,15 @@
 
         <h2>Helpful Web Links</h2>
         <div id="links-container">
-            <ul>
-                {% if links %}
-                <li>{{ links }}</li>
-                {% endif %}
-                <li>helpful links</li>
-                <li>helpful links</li>
-                <li>helpful links</li>
-                <li>helpful links</li>
-                <li>helpful links</li>
-            </ul>
+            {% if links %}
+                <ul>
+                {% for l in links %}
+                    <li>{{ l }}</li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <ul><li>item</li></ul>
+            {% endif %}
         </div>
     </div>
 

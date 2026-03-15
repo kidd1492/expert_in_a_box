@@ -1,9 +1,13 @@
 # agents/tool_file.py
+# agents/tool_file.py
 import wikipedia as wk
 import json, os, requests
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
 from langchain_ollama import ChatOllama
+from tavily import TavilyClient
+from typing import Dict, Any
+
 
 
 def wiki_search(term):
@@ -83,3 +87,19 @@ def generate_subtopics(term: str) -> list[str]:
     response = model.invoke(prompt)
     subtopic_list = response.content[1:-1].split(",")
     return subtopic_list
+
+def web_search(query: str)-> list:
+    load_dotenv()
+    TAVILY_API_KEY = os.getenv("TAVILY_API_KEY")
+
+    trvily_client = TavilyClient(api_key=TAVILY_API_KEY)
+    result = trvily_client.search(query)
+    links = []
+    for r in  result['results']:
+        links.append(r["url"])
+    return links
+
+
+if __name__ == "__main__":
+    result = web_search("sqlite")
+    print(result)

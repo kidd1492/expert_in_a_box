@@ -10,10 +10,10 @@ research_bp = Blueprint('research', __name__, url_prefix='/research')
 @research_bp.route("/home")
 def home():
     summary = "hello this is a summary"
-    if not os.path.exists("core/data/topic_files/sqlite.json"):
+    if not os.path.exists("core/data/topic_files/main_topic.json"):
         return render_template("research_learning.html", videos=[], summary=summary)
 
-    load_last = tool_file.load_topic_data("core/data/topic_files/sqlite.json")
+    load_last = tool_file.load_topic_data("core/data/topic_files/main_topic.json")
     videos = load_last['videos']
     summary = load_last['overview']
     subtopics = load_last['subtopics']
